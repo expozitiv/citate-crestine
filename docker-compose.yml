@@ -1,0 +1,17 @@
+# Postgres local pentru dezvoltare (în producție: Supabase PostgreSQL).
+# Pornire: docker compose up -d
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: citate
+    ports:
+      - '5432:5432'
+    volumes:
+      - citate_pgdata:/var/lib/postgresql/data
+
+volumes:
+  citate_pgdata:

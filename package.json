@@ -1,0 +1,42 @@
+{
+  "name": "citate-crestine",
+  "version": "1.0.0",
+  "description": "citatecrestine.ro — antologie teologică în limba română (Next.js + Payload CMS + Supabase PostgreSQL)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
+    "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
+    "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
+    "seed:design": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts",
+    "backup:db": "node scripts/backup.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "^3.88.0",
+    "@payloadcms/next": "^3.88.0",
+    "@payloadcms/richtext-lexical": "^3.88.0",
+    "@payloadcms/storage-s3": "^3.88.0",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.4.2",
+    "graphql": "^16.14.2",
+    "next": "^16.3.1",
+    "payload": "^3.88.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "puppeteer-core": "^25.8.0",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2"
+  }
+}
