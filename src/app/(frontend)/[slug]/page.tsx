@@ -131,11 +131,27 @@ export default async function PaginaCitat({ params }: Props) {
           {carte && (
             <div className="pagina-citat__sursa">
               din volumul{' '}
-              <Link href={`/carti/${carte.slug}`} className="link-carte">
-                {carte.nume}
-              </Link>
+              {carte.url ? (
+                <a href={carte.url} className="link-carte" rel="noopener" target="_blank">
+                  {carte.nume}
+                </a>
+              ) : (
+                <Link href={`/carti/${carte.slug}`} className="link-carte">
+                  {carte.nume}
+                </Link>
+              )}
               {carte.editura ? `, ${carte.editura}` : ''}
               {carte.an ? `, ${carte.an}` : ''}
+              {carte.url && (
+                <Link
+                  href={`/carti/${carte.slug}`}
+                  className="pagina-citat__sursa-intern"
+                  title="Toate citatele din această carte"
+                  aria-label="Toate citatele din această carte"
+                >
+                  ❝❞
+                </Link>
+              )}
             </div>
           )}
           {teme.length > 0 && (

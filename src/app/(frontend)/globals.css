@@ -987,6 +987,20 @@ button {
   border-bottom: 1px solid var(--border-medalion);
 }
 
+/* Iconiță discretă lângă sursa externă — duce la pagina internă a cărții. */
+.pagina-citat__sursa-intern {
+  margin-left: 8px;
+  font-size: 14px;
+  color: var(--text-secundar);
+  opacity: 0.55;
+  letter-spacing: 1px;
+}
+
+.pagina-citat__sursa-intern:hover {
+  color: var(--verde);
+  opacity: 1;
+}
+
 .pagina-citat__teme {
   font-family: var(--crimson);
   font-size: 17px;
