@@ -4,7 +4,7 @@ import { revalidateContent } from '@/lib/revalidate'
 import { normalize, quoteSlug, slugify } from '@/lib/slug'
 import { ensureUniqueSlug } from '@/lib/uniqueSlug'
 
-import { authenticatedOnly, publicRead } from './access'
+import { authenticatedOnly } from './access'
 
 export const Citate: CollectionConfig = {
   slug: 'citate',
@@ -22,7 +22,7 @@ export const Citate: CollectionConfig = {
     },
   },
   access: {
-    read: publicRead,
+    read: authenticatedOnly,
     create: authenticatedOnly,
     update: authenticatedOnly,
     delete: authenticatedOnly,

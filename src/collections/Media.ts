@@ -12,6 +12,8 @@ export const Media: CollectionConfig = {
     group: 'Administrare',
   },
   access: {
+    // Fișierele (medalioanele autorilor) sunt servite prin /api/media/file/*,
+    // care respectă acest `read` — blocarea lui ar rupe imaginile de pe site.
     read: publicRead,
     create: authenticatedOnly,
     update: authenticatedOnly,

@@ -4,7 +4,7 @@ import { revalidateContent } from '@/lib/revalidate'
 import { normalize, slugify } from '@/lib/slug'
 import { ensureUniqueSlug } from '@/lib/uniqueSlug'
 
-import { authenticatedOnly, publicRead } from './access'
+import { authenticatedOnly } from './access'
 
 export const Autori: CollectionConfig = {
   slug: 'autori',
@@ -19,7 +19,7 @@ export const Autori: CollectionConfig = {
     group: 'Antologie',
   },
   access: {
-    read: publicRead,
+    read: authenticatedOnly,
     create: authenticatedOnly,
     update: authenticatedOnly,
     delete: authenticatedOnly,
