@@ -226,40 +226,11 @@ button {
 }
 
 /* --------------------------------------------------------------------------
-   Homepage — banda meta + masthead centrat
+   Homepage — masthead centrat
    -------------------------------------------------------------------------- */
 
-.metaband {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 11px 40px;
-  font-family: var(--fira);
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: var(--text-meta);
-}
-
-.metaband__data {
-  flex: 1;
-}
-
-.metaband__cruce {
-  font-family: var(--fraunces);
-  font-size: 15px;
-  color: var(--auriu);
-  letter-spacing: 0;
-}
-
-.metaband__linkuri {
-  flex: 1;
-  display: flex;
-  gap: 18px;
-  justify-content: flex-end;
-}
-
 .masthead {
-  padding: 38px 72px 0;
+  padding: 54px 72px 0;
   text-align: center;
 }
 
@@ -286,12 +257,17 @@ button {
   text-transform: uppercase;
 }
 
+.masthead__filet {
+  width: 48px;
+  margin-top: 24px;
+}
+
 .masthead__nav {
   display: flex;
   justify-content: center;
   align-items: baseline;
   gap: 40px;
-  margin-top: 22px;
+  margin-top: 24px;
   font-family: var(--crimson);
   font-size: 18px;
   font-variant: small-caps;

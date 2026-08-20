@@ -1,8 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
 
-import { dataLunga } from '@/lib/format'
-
 import { MobileHeader } from './MobileMenu'
 import { NAV_LINKS, type NavKey } from './nav'
 import { SearchForm } from './SearchForm'
@@ -43,21 +41,11 @@ export const SiteHeader = ({
 )
 
 /**
- * Header-ul paginii principale: banda meta (dată · ✠ · despre/contact),
- * masthead centrat cu logo mare, tagline, nav și căutarea proeminentă.
+ * Header-ul paginii principale: masthead centrat — logo mare, tagline,
+ * filet auriu, nav și căutarea proeminentă.
  */
 export const HomeHeader = () => (
   <header>
-    <div className="linie-hair doar-desktop">
-      <div className="metaband wrap">
-      <span className="metaband__data">{dataLunga()}</span>
-      <span className="metaband__cruce">✠</span>
-        <span className="metaband__linkuri">
-          <Link href="/despre">DESPRE</Link>
-          <Link href="/contact">CONTACT</Link>
-        </span>
-      </div>
-    </div>
     <div className="masthead wrap">
       <div className="masthead__logo">
         <Link href="/">
@@ -65,6 +53,7 @@ export const HomeHeader = () => (
         </Link>
       </div>
       <div className="masthead__tagline">O ANTOLOGIE TEOLOGICĂ ÎN LIMBA ROMÂNĂ</div>
+      <div className="filet masthead__filet" />
       <nav className="masthead__nav" aria-label="Meniu principal">
         {NAV_LINKS.map((l) => (
           <Link key={l.key} href={l.href}>

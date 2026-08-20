@@ -34,6 +34,7 @@ export const SiteFooter = () => (
             {l.label}
           </Link>
         ))}
+        <Link href="/contact">contact</Link>
         <a href="https://www.magnagratia.org/" className="auriu" rel="noopener">
           magnagratia.org
         </a>
