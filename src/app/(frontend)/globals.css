@@ -825,7 +825,7 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .pagina-citat__medalion {
@@ -843,14 +843,14 @@ button {
   font-size: 15.5px;
   font-style: italic;
   color: var(--text-secundar);
-  margin-top: 4px;
+  margin-top: 3px;
 }
 
 .pagina-citat__sursa {
   font-family: var(--crimson);
   font-size: 17.5px;
   color: var(--text-secundar);
-  margin-top: 34px;
+  margin-top: 46px;
 }
 
 .link-carte {
@@ -864,7 +864,7 @@ button {
   font-size: 17px;
   font-variant: small-caps;
   letter-spacing: 0.14em;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .pagina-citat__actiuni {
@@ -872,7 +872,7 @@ button {
   justify-content: center;
   align-items: center;
   gap: 14px;
-  margin-top: 42px;
+  margin-top: 58px;
 }
 
 .buton-plin {
@@ -1666,7 +1666,7 @@ button {
 
   .pagina-citat__sursa {
     font-size: 15.5px;
-    margin-top: 24px;
+    margin-top: 34px;
   }
 
   .pagina-citat__teme {
@@ -1679,7 +1679,7 @@ button {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
-    margin: 32px 4px 0;
+    margin: 44px 4px 0;
   }
 
   .pagina-citat__actiuni .popover-ancora {
