@@ -73,10 +73,25 @@ export async function AutorView({ slug, pagina }: { slug: string; pagina: number
     })),
   )
 
+  const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: autor.nume,
+    url: `${serverUrl}/autori/${autor.slug}`,
+    ...(autor.descriereScurta ? { description: autor.descriereScurta } : {}),
+    ...(portret ? { image: portret.startsWith('http') ? portret : `${serverUrl}${portret}` } : {}),
+    ...(autor.website ? { sameAs: [autor.website] } : {}),
+  }
+
   return (
     <>
       <SiteHeader activ="autori" />
       <main>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {totiAutorii.length > 1 && (
           <div className="linie-hair doar-desktop">
             <nav className="banda-autori wrap" aria-label="Autori">

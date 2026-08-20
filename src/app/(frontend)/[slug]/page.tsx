@@ -149,7 +149,23 @@ export default async function PaginaCitat({ params }: Props) {
                   title="Toate citatele din această carte"
                   aria-label="Toate citatele din această carte"
                 >
-                  ❝❞
+                  {/* Fleuron „carte deschisă cu pagini în evantai” — vezi design handoff */}
+                  <svg
+                    viewBox="0 0 16 16"
+                    width="15"
+                    height="15"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M8 3.4 C6.6 2.1 4.3 1.8 1.9 2.6 V11.5 C4.3 10.7 6.6 11 8 12.3 C9.4 11 11.7 10.7 14.1 11.5 V2.6 C11.7 1.8 9.4 2.1 8 3.4 Z" />
+                    <path d="M8 3.4 V12.3" />
+                    <path d="M8 5.6 C7 4.8 5.5 4.6 3.9 5" />
+                    <path d="M8 5.6 C9 4.8 10.5 4.6 12.1 5" />
+                  </svg>
                 </Link>
               )}
             </div>

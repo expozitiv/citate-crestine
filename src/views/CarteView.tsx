@@ -32,10 +32,27 @@ export async function CarteView({ slug, pagina }: { slug: string; pagina: number
   const citate = await getCitateByCarte(carte.id, pagina)
   if (pagina > 1 && citate.docs.length === 0) notFound()
 
+  const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Book',
+    name: carte.numeComplet || carte.nume,
+    url: `${serverUrl}/carti/${carte.slug}`,
+    ...(autor ? { author: { '@type': 'Person', name: autor.nume } } : {}),
+    ...(carte.editura ? { publisher: { '@type': 'Organization', name: carte.editura } } : {}),
+    ...(carte.an ? { datePublished: String(carte.an) } : {}),
+    ...(carte.url ? { sameAs: [carte.url] } : {}),
+    inLanguage: 'ro',
+  }
+
   return (
     <>
       <SiteHeader />
       <main>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <div className="linie-hair">
           <section className="antet-pagina wrap">
             <h1 className="antet-pagina__titlu" style={{ margin: 0, fontStyle: 'italic' }}>

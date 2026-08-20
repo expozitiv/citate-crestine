@@ -1,3 +1,5 @@
+import type { Metadata } from 'next'
+
 import Link from 'next/link'
 import React from 'react'
 
@@ -9,6 +11,27 @@ import { autorDoc, carteDoc, dataLunga, dataScurta, imagineUrl, temeDocs } from 
 /* Read-heavy: pagină statică, regenerată la 10 minute (citatul zilei se
    schimbă la miezul nopții) și invalidată la orice modificare din Admin. */
 export const revalidate = 600
+
+export const metadata: Metadata = { alternates: { canonical: '/' } }
+
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+
+/* WebSite + SearchAction — caseta de căutare din rezultatele Google. */
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Citate creștine',
+  url: SERVER_URL,
+  inLanguage: 'ro',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${SERVER_URL}/cautare?q={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+}
 
 export default async function Homepage() {
   const [citatulZilei, temePopulare, dinAntologie] = await Promise.all([
@@ -25,6 +48,10 @@ export default async function Homepage() {
     <>
       <HomeHeader />
       <main>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
         {citatulZilei && (
           <section className="citat-zilei-banda">
             <div className="citat-zilei wrap">

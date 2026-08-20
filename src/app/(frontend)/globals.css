@@ -987,18 +987,32 @@ button {
   border-bottom: 1px solid var(--border-medalion);
 }
 
-/* Iconiță discretă lângă sursa externă — duce la pagina internă a cărții. */
+/* Fleuron discret lângă sursa externă — duce la pagina internă a cărții.
+   Padding-ul mărește ținta de atingere pe mobil fără să îngroașe desenul. */
 .pagina-citat__sursa-intern {
-  margin-left: 8px;
-  font-size: 14px;
+  display: inline-flex;
+  margin-left: 4px;
+  padding: 6px;
+  vertical-align: -8px;
   color: var(--text-secundar);
   opacity: 0.55;
-  letter-spacing: 1px;
+  transition: opacity 0.15s, color 0.15s, transform 0.15s;
 }
 
 .pagina-citat__sursa-intern:hover {
   color: var(--verde);
   opacity: 1;
+  transform: translateY(1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pagina-citat__sursa-intern {
+    transition: none;
+  }
+
+  .pagina-citat__sursa-intern:hover {
+    transform: none;
+  }
 }
 
 .pagina-citat__teme {
