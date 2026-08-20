@@ -93,17 +93,37 @@ const fnv1a = (input: string): number => {
 export const todayBucharest = (): string =>
   new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Bucharest' }).format(new Date())
 
+/** Miezul nopții curent (ora României), ca timestamp ISO cu offset (+02:00/+03:00). */
+const startOfDayBucharest = (): string => {
+  const offset = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Europe/Bucharest',
+    timeZoneName: 'longOffset',
+  })
+    .formatToParts(new Date())
+    .find((p) => p.type === 'timeZoneName')!.value // „GMT+03:00”
+  return `${todayBucharest()}T00:00:00.000${offset.replace('GMT', '')}`
+}
+
 /**
  * Citatul zilei: determinist pe zi (seed = data), stabil între request-uri.
- * Pagina care îl afișează este cache-uită prin ISR.
+ * Selecția se face doar dintre citatele create înainte de miezul nopții curent,
+ * ca adăugările de pe parcursul zilei să nu schimbe citatul deja afișat —
+ * ele intră în „bazinul” de mâine. Pagina e cache-uită prin ISR.
  */
 export const getCitatulZilei = async (): Promise<CitatDoc | null> => {
   const payload = await getPayloadClient()
-  const { totalDocs } = await payload.count({ collection: 'citate' })
-  if (totalDocs === 0) return null
+  let where: Where | undefined = { createdAt: { less_than: startOfDayBucharest() } }
+  let { totalDocs } = await payload.count({ collection: 'citate', where })
+  if (totalDocs === 0) {
+    // Bază nouă, cu toate citatele create azi — folosim întreaga antologie.
+    where = undefined
+    totalDocs = (await payload.count({ collection: 'citate' })).totalDocs
+    if (totalDocs === 0) return null
+  }
   const index = fnv1a(todayBucharest()) % totalDocs
   const res = await payload.find({
     collection: 'citate',
+    where,
     sort: 'id',
     limit: 1,
     page: index + 1,

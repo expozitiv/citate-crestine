@@ -1,11 +1,9 @@
 import Link from 'next/link'
 import React from 'react'
 
-import { NAV_LINKS } from './nav'
-
 /**
  * Footer negru standard: bară verde 3px, logo + tagline, citat central + ✠,
- * nav small-caps, bara de credits pe 3 coloane și rândul de copyright.
+ * doar contact în nav (meniul complet e în header), bara de credits și copyright.
  * Pe mobil: varianta condensată, centrată (macheta 3a/3b).
  */
 export const SiteFooter = () => (
@@ -29,11 +27,6 @@ export const SiteFooter = () => (
         <div className="footer__cruce">✠</div>
       </div>
       <nav className="footer__nav" aria-label="Meniu footer">
-        {NAV_LINKS.map((l) => (
-          <Link key={l.key} href={l.href}>
-            {l.label}
-          </Link>
-        ))}
         <Link href="/contact">contact</Link>
         <a href="https://www.magnagratia.org/" className="auriu" rel="noopener">
           magnagratia.org
@@ -65,11 +58,7 @@ export const SiteFooter = () => (
       </div>
       <div className="footer__cruce">✠</div>
       <nav className="footer__mobil-nav" aria-label="Meniu footer">
-        {NAV_LINKS.map((l) => (
-          <Link key={l.key} href={l.href}>
-            {l.label}
-          </Link>
-        ))}
+        <Link href="/contact">contact</Link>
       </nav>
       <div className="footer__mobil-copyright">
         citatecrestine.ro · Asociația Magna Gratia | © 2005–2026
