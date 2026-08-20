@@ -4,6 +4,7 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 
 import { NAV_LINKS } from './nav'
+import { SearchForm } from './SearchForm'
 
 /**
  * Header mobil complet: logo + hamburger (două linii 24×2px), meniul
@@ -49,16 +50,7 @@ export const MobileHeader = ({
       )}
       {showSearch && (
         <div className="cautare-mobil">
-          <form action="/cautare" method="get" className="searchbox" role="search">
-            <input
-              type="search"
-              name="q"
-              defaultValue={searchDefault}
-              placeholder="Caută în 20.000+ de citate…"
-              aria-label="Caută în citate"
-            />
-            <button type="submit">caută</button>
-          </form>
+          <SearchForm defaultValue={searchDefault} placeholder="Caută în 20.000+ de citate…" />
         </div>
       )}
     </>
