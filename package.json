@@ -12,6 +12,7 @@
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "seed:design": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts",
+    "seed:citate": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-citate.ts",
     "backup:db": "node scripts/backup.mjs"
   },
   "engines": {
