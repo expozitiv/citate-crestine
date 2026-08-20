@@ -499,24 +499,40 @@ button {
    Citatul zilei (homepage)
    -------------------------------------------------------------------------- */
 
+/* Utilitare inline responsive (textul datei: lung pe desktop, scurt pe mobil) */
+.doar-i-mobil {
+  display: none;
+}
+
+/* Banda hero — „placa” editorială crem, în ritmul alb → crem → verde */
+.citat-zilei-banda {
+  background: var(--fond-crem);
+  border-bottom: 1px solid var(--hairline);
+}
+
 .citat-zilei {
-  padding: 46px 190px 44px;
+  padding: 30px 190px 40px;
   text-align: center;
   position: relative;
 }
 
-.citat-zilei .ghilimea {
-  height: 76px;
-  margin: -22px 0 4px;
+.citat-zilei__antet {
+  margin: 0 0 4px;
 }
 
-.citat-zilei__eticheta {
-  margin-bottom: 20px;
+.citat-zilei__antet::before,
+.citat-zilei__antet::after {
+  border-top-color: var(--hairline-crem);
+}
+
+.citat-zilei .ghilimea {
+  height: 70px;
+  margin: -12px 0 6px;
 }
 
 .citat-zilei__text {
   font-family: var(--fraunces);
-  font-size: 40px;
+  font-size: 42px;
   font-weight: 440;
   line-height: 1.32;
   text-wrap: pretty;
@@ -532,8 +548,19 @@ button {
 }
 
 .citat-zilei .filet {
-  border-top-color: var(--border-medalion);
-  margin: 28px auto 20px;
+  margin: 26px auto 22px;
+}
+
+.citat-zilei__autor-bloc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.citat-zilei__medalion {
+  width: 60px;
+  height: 60px;
 }
 
 .citat-zilei__autor {
@@ -1611,18 +1638,36 @@ button {
     font-size: 90px;
   }
 
+  .doar-i-desktop {
+    display: none;
+  }
+
+  .doar-i-mobil {
+    display: inline;
+  }
+
   /* Homepage */
   .citat-zilei {
-    padding: 44px 26px 40px;
+    padding: 24px 26px 34px;
+  }
+
+  .citat-zilei__antet {
+    margin: 0 0 2px;
+    gap: 14px;
   }
 
   .citat-zilei .ghilimea {
-    height: 64px;
-    margin: -18px 0 2px;
+    height: 54px;
+    margin: -8px 0 4px;
   }
 
-  .citat-zilei__eticheta {
-    margin-bottom: 22px;
+  .citat-zilei__medalion {
+    width: 52px;
+    height: 52px;
+  }
+
+  .citat-zilei__autor-bloc {
+    gap: 8px;
   }
 
   .citat-zilei__text {

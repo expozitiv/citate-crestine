@@ -4,7 +4,7 @@ import React from 'react'
 import { CitatInLista, Dinkus, TemeLinkuri } from '@/components/Citate'
 import { HomeHeader } from '@/components/SiteHeader'
 import { getCitatulZilei, getDinAntologie, getTemePopulare } from '@/lib/data'
-import { autorDoc, carteDoc, dataScurta, temeDocs } from '@/lib/format'
+import { autorDoc, carteDoc, dataLunga, dataScurta, imagineUrl, temeDocs } from '@/lib/format'
 
 /* Read-heavy: pagină statică, regenerată la 10 minute (citatul zilei se
    schimbă la miezul nopții) și invalidată la orice modificare din Admin. */
@@ -19,39 +19,59 @@ export default async function Homepage() {
 
   const autorZilei = citatulZilei ? autorDoc(citatulZilei) : null
   const carteZilei = citatulZilei ? carteDoc(citatulZilei) : null
+  const portretZilei = autorZilei ? imagineUrl(autorZilei.imagine) : null
 
   return (
     <>
       <HomeHeader />
       <main>
         {citatulZilei && (
-          <section className="citat-zilei wrap">
-            <div className="ghilimea" aria-hidden="true">
-              „
-            </div>
-            <div className="eticheta citat-zilei__eticheta">CITATUL ZILEI · {dataScurta()}</div>
-            <blockquote className="citat-zilei__text">
-              <Link href={`/${citatulZilei.slug}`}>{citatulZilei.text}</Link>
-            </blockquote>
-            <div className="filet" />
-            {autorZilei && (
-              <div className="citat-zilei__autor">
-                —{' '}
-                <Link href={`/autori/${autorZilei.slug}`} className="link-serif">
-                  {autorZilei.nume}
-                </Link>
+          <section className="citat-zilei-banda">
+            <div className="citat-zilei wrap">
+              <div className="antet-hairline citat-zilei__antet">
+                <div className="eticheta">
+                  CITATUL ZILEI · <span className="doar-i-desktop">{dataLunga()}</span>
+                  <span className="doar-i-mobil">{dataScurta()}</span>
+                </div>
               </div>
-            )}
-            {carteZilei && (
-              <div className="citat-zilei__sursa">
-                <Link href={`/carti/${carteZilei.slug}`}>
-                  {carteZilei.nume}
-                  {carteZilei.an ? `, ${carteZilei.an}` : ''}
-                </Link>
+              <div className="ghilimea" aria-hidden="true">
+                „
               </div>
-            )}
-            <div className="citat-zilei__teme">
-              <TemeLinkuri teme={temeDocs(citatulZilei)} />
+              <blockquote className="citat-zilei__text">
+                <Link href={`/${citatulZilei.slug}`}>{citatulZilei.text}</Link>
+              </blockquote>
+              <div className="filet" />
+              {autorZilei && (
+                <div className="citat-zilei__autor-bloc">
+                  {portretZilei && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={portretZilei}
+                      alt={autorZilei.nume}
+                      className="medalion citat-zilei__medalion"
+                      width={60}
+                      height={60}
+                    />
+                  )}
+                  <div className="citat-zilei__autor">
+                    —{' '}
+                    <Link href={`/autori/${autorZilei.slug}`} className="link-serif">
+                      {autorZilei.nume}
+                    </Link>
+                  </div>
+                </div>
+              )}
+              {carteZilei && (
+                <div className="citat-zilei__sursa">
+                  <Link href={`/carti/${carteZilei.slug}`}>
+                    {carteZilei.nume}
+                    {carteZilei.an ? `, ${carteZilei.an}` : ''}
+                  </Link>
+                </div>
+              )}
+              <div className="citat-zilei__teme">
+                <TemeLinkuri teme={temeDocs(citatulZilei)} />
+              </div>
             </div>
           </section>
         )}

@@ -107,7 +107,7 @@ export const getCitatulZilei = async (): Promise<CitatDoc | null> => {
     sort: 'id',
     limit: 1,
     page: index + 1,
-    depth: 1,
+    depth: 2, // populează și autor.imagine (medalionul din hero)
   })
   return (res.docs[0] as CitatDoc | undefined) ?? null
 }
