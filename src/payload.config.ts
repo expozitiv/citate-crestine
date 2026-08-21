@@ -32,6 +32,16 @@ export default buildConfig({
       titleSuffix: ' — Citate creștine',
     },
     dateFormat: 'd MMMM yyyy H:mm',
+    components: {
+      views: {
+        dashboard: {
+          Component: '/components/admin/Dashboard#Dashboard',
+        },
+      },
+    },
+    importMap: {
+      baseDir: path.resolve(dirname),
+    },
   },
   collections: [Citate, Autori, Carti, Teme, Media, Users],
   editor: lexicalEditor(),

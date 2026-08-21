@@ -1,1 +1,460 @@
-// Stiluri custom pentru Payload Admin (gol deocamdată).
+/* ==========================================================================
+   Payload Admin — tema generală „Citate creștine”
+   Re-tematizare prin variabilele oficiale Payload (@layer payload-default):
+   fiind ne-stratificate (unlayered), regulile de aici câștigă întotdeauna.
+   Ambele teme (light/dark) derivă din scara --color-base-*, deci o singură
+   scară caldă tematizează tot admin-ul, inclusiv paginile CRUD standard.
+   ========================================================================== */
+
+:root {
+  /* Scara de neutre calde — de la fondul-hârtie al site-ului (#fbf7f1)
+     la negrul cald (#1d1b18). Light o folosește direct, dark o inversează. */
+  --color-base-0: #fbf7f1;
+  --color-base-50: #f3ecdf;
+  --color-base-100: #ece4d4;
+  --color-base-150: #e2d9c9;
+  --color-base-200: #ddd2bd;
+  --color-base-250: #d9ccb4;
+  --color-base-300: #cfc4af;
+  --color-base-350: #c4b89f;
+  --color-base-400: #b3a789;
+  --color-base-450: #a89c82;
+  --color-base-500: #97907f;
+  --color-base-550: #8a8172;
+  --color-base-600: #79715f;
+  --color-base-650: #6f6a5f;
+  --color-base-700: #5f584a;
+  --color-base-750: #4d4638;
+  --color-base-800: #2b2620;
+  --color-base-850: #241f1a;
+  --color-base-900: #1d1b18;
+  --color-base-950: #15130f;
+  --color-base-1000: #0f0d0b;
+
+  /* Accentul „success” (selecții, stări active, confirmări) → verdele site-ului */
+  --color-success-50: #eef4ec;
+  --color-success-100: #dfe9dd;
+  --color-success-150: #cfe0d2;
+  --color-success-200: #b8d1bd;
+  --color-success-250: #a2c2a9;
+  --color-success-300: #8fb59c;
+  --color-success-350: #7aa389;
+  --color-success-400: #659176;
+  --color-success-450: #547f63;
+  --color-success-500: #3f6b50;
+  --color-success-550: #2f5c41;
+  --color-success-600: #2a5138;
+  --color-success-650: #244a33;
+  --color-success-700: #1f402c;
+  --color-success-750: #1a3625;
+  --color-success-800: #152c1e;
+  --color-success-850: #102218;
+  --color-success-900: #0c1a12;
+  --color-success-950: #08120c;
+
+  /* Tipografie: Fira Sans pe aparat (lizibilitate în tabele și formulare),
+     Fraunces pe titluri — vezi regula h1 de mai jos. */
+  --font-body: var(--font-fira), 'Fira Sans', system-ui, sans-serif;
+  --font-serif: var(--font-fraunces), 'Fraunces', Georgia, serif;
+
+  /* Site-ul e „square” — fără colțuri rotunjite */
+  --style-radius-s: 0px;
+  --style-radius-m: 0px;
+  --style-radius-l: 0px;
+
+  /* Câmpurile de formular pe fondul cald-alb al inputurilor de pe site */
+  --theme-input-bg: #fffdf9;
+}
+
+html[data-theme='dark'] {
+  --theme-input-bg: var(--theme-elevation-50);
+}
+
+/* Titlurile de pagină în serifa editorială a site-ului */
+h1 {
+  font-family: var(--font-serif);
+  font-weight: 520;
+}
+
+/* ==========================================================================
+   Dashboard personalizat „Citate creștine”
+   Reia design system-ul site-ului public (globals.css): paleta crem/verde/
+   auriu, tipografia Fraunces / Crimson Pro / Fira Sans, hairline-uri.
+   Totul e izolat sub .cc-dash ca să nu atingă restul admin-ului.
+   ========================================================================== */
+
+.cc-dash {
+  /* Tokeni din contractul vizual al site-ului */
+  --cc-fond: #fbf7f1;
+  --cc-fond-crem: #f3ecdf;
+  --cc-verde: #2f5c41;
+  --cc-verde-hover: #244a33;
+  --cc-verde-deschis: #cfe0d2;
+  --cc-verde-pal: #eef4ec;
+  --cc-auriu: #c9a86a;
+  --cc-auriu-2: #c4a273;
+  --cc-text: #1d1b18;
+  --cc-text-secundar: #79715f;
+  --cc-text-tertiar: #9a9076;
+  --cc-hairline: #e2d9c9;
+  --cc-hairline-crem: #ddd2bd;
+  --cc-border-medalion: #d9ccb4;
+  --cc-fond-card: #fffdf9;
+
+  --cc-fraunces: var(--font-fraunces), 'Fraunces', Georgia, serif;
+  --cc-crimson: var(--font-crimson), 'Crimson Pro', Georgia, serif;
+  --cc-fira: var(--font-fira), 'Fira Sans', system-ui, sans-serif;
+
+  background: var(--cc-fond);
+  color: var(--cc-text);
+  font-family: var(--cc-crimson);
+  border-top: 5px solid var(--cc-verde);
+  min-height: 100%;
+  padding: 34px var(--gutter-h, 40px) 60px;
+
+  a {
+    text-decoration: none;
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+}
+
+/* Tema întunecată a admin-ului: aceleași accente, fonduri stinse */
+html[data-theme='dark'] .cc-dash {
+  --cc-fond: #1d1b18;
+  --cc-fond-crem: #26231e;
+  --cc-verde: #3f7c57;
+  --cc-verde-hover: #4c9268;
+  --cc-verde-pal: #eef4ec;
+  --cc-text: #e8e0d2;
+  --cc-text-secundar: #9a8f7c;
+  --cc-text-tertiar: #79715f;
+  --cc-hairline: #35312a;
+  --cc-hairline-crem: #35312a;
+  --cc-border-medalion: #4a443a;
+  --cc-fond-card: #26231e;
+}
+
+/* --------------------------------------------------------------------------
+   Antet — în ritmul masthead-ului de pe homepage
+   -------------------------------------------------------------------------- */
+
+.cc-dash__antet {
+  text-align: center;
+  padding-top: 8px;
+}
+
+.cc-dash__eticheta {
+  font-family: var(--cc-fira);
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  color: var(--cc-verde);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.cc-dash__titlu {
+  font-family: var(--cc-fraunces);
+  font-size: 38px;
+  font-weight: 560;
+  margin: 14px 0 0;
+  color: var(--cc-text);
+}
+
+.cc-dash__subtitlu {
+  font-family: var(--cc-crimson);
+  font-size: 18px;
+  font-style: italic;
+  color: var(--cc-text-secundar);
+  max-width: 620px;
+  margin: 10px auto 0;
+  line-height: 1.5;
+}
+
+/* Filet orizontal scurt auriu (ca pe site) */
+.cc-dash__filet {
+  width: 56px;
+  border-top: 2px solid var(--cc-auriu);
+  margin: 22px auto 0;
+}
+
+/* --------------------------------------------------------------------------
+   Statistici — plăci crem cu numere Fraunces
+   -------------------------------------------------------------------------- */
+
+.cc-dash__statistici {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.cc-dash__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: var(--cc-fond-crem);
+  border: 1px solid var(--cc-hairline-crem);
+  padding: 22px 12px 18px;
+  text-align: center;
+}
+
+.cc-dash__stat:hover {
+  border-color: var(--cc-auriu-2);
+}
+
+.cc-dash__stat-numar {
+  font-family: var(--cc-fraunces);
+  font-size: 40px;
+  font-weight: 480;
+  line-height: 1;
+  color: var(--cc-text);
+}
+
+.cc-dash__stat-eticheta {
+  font-family: var(--cc-fira);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--cc-verde);
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   Acțiuni rapide — butoanele small-caps ale site-ului
+   -------------------------------------------------------------------------- */
+
+.cc-dash__actiuni {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 26px;
+  flex-wrap: wrap;
+}
+
+.cc-dash__buton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 26px;
+  font-family: var(--cc-crimson);
+  font-size: 16.5px;
+  font-variant: small-caps;
+  letter-spacing: 0.16em;
+}
+
+.cc-dash__buton--plin {
+  background: var(--cc-verde);
+  color: var(--cc-verde-pal);
+}
+
+.cc-dash__buton--plin:hover {
+  background: var(--cc-verde-hover);
+  color: var(--cc-verde-pal);
+}
+
+.cc-dash__buton--outline {
+  border: 1px solid var(--cc-verde);
+  color: var(--cc-verde);
+}
+
+.cc-dash__buton--outline:hover {
+  background: var(--cc-verde);
+  color: var(--cc-verde-pal);
+}
+
+/* --------------------------------------------------------------------------
+   Coloane: ultimele citate + calitate / colecții
+   -------------------------------------------------------------------------- */
+
+.cc-dash__coloane {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 40px;
+  margin-top: 44px;
+  align-items: start;
+}
+
+.cc-dash__coloana-secundara {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+
+.cc-dash__sectiune-titlu {
+  font-family: var(--cc-fraunces);
+  font-size: 22px;
+  font-weight: 520;
+  margin: 0 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--cc-hairline);
+  color: var(--cc-text);
+}
+
+.cc-dash__gol {
+  font-family: var(--cc-crimson);
+  font-size: 16px;
+  font-style: italic;
+  color: var(--cc-text-secundar);
+}
+
+/* Ultimele citate — în ritmul listelor de pe site */
+.cc-dash__lista-citate {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cc-dash__citat {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--cc-hairline);
+}
+
+.cc-dash__citat:last-child {
+  border-bottom: 0;
+}
+
+.cc-dash__citat-text {
+  font-family: var(--cc-fraunces);
+  font-size: 18px;
+  font-weight: 440;
+  line-height: 1.45;
+  color: var(--cc-text);
+  text-wrap: pretty;
+}
+
+.cc-dash__citat-text:hover {
+  color: var(--cc-text);
+  text-decoration: underline;
+  text-decoration-color: var(--cc-auriu);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.cc-dash__citat-atribuire {
+  font-family: var(--cc-crimson);
+  font-size: 14.5px;
+  color: var(--cc-text-secundar);
+  margin: 8px 0 0;
+}
+
+.cc-dash__citat-data {
+  font-style: italic;
+  color: var(--cc-text-tertiar);
+}
+
+/* Indicatori de calitate */
+.cc-dash__indicatori {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cc-dash__indicatori li {
+  border-bottom: 1px solid var(--cc-hairline);
+}
+
+.cc-dash__indicatori li:last-child {
+  border-bottom: 0;
+}
+
+.cc-dash__indicator {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 11px 2px;
+  font-family: var(--cc-crimson);
+  font-size: 16.5px;
+  color: var(--cc-text);
+}
+
+a.cc-dash__indicator:hover {
+  color: var(--cc-verde);
+}
+
+.cc-dash__indicator-numar {
+  font-family: var(--cc-fraunces);
+  font-size: 18px;
+  font-weight: 500;
+  min-width: 34px;
+  text-align: right;
+  color: var(--cc-auriu-2);
+}
+
+.cc-dash__indicator--ok {
+  color: var(--cc-text-secundar);
+}
+
+.cc-dash__indicator--ok .cc-dash__indicator-numar {
+  color: var(--cc-verde);
+}
+
+/* Acces rapid către colecții */
+.cc-dash__colectii {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 24px;
+}
+
+.cc-dash__colectie {
+  font-family: var(--cc-crimson);
+  font-size: 16.5px;
+  font-variant: small-caps;
+  letter-spacing: 0.14em;
+  color: var(--cc-text);
+  border-bottom: 1px solid var(--cc-hairline);
+  padding: 8px 2px 9px;
+}
+
+.cc-dash__colectie:hover {
+  color: var(--cc-verde);
+  border-bottom-color: var(--cc-auriu-2);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+  .cc-dash__coloane {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+}
+
+@media (max-width: 760px) {
+  .cc-dash {
+    padding: 26px 20px 44px;
+    border-top-width: 4px;
+  }
+
+  .cc-dash__titlu {
+    font-size: 30px;
+  }
+
+  .cc-dash__subtitlu {
+    font-size: 16px;
+  }
+
+  .cc-dash__statistici {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 26px;
+  }
+
+  .cc-dash__stat-numar {
+    font-size: 32px;
+  }
+
+  .cc-dash__actiuni {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .cc-dash__citat-text {
+    font-size: 17px;
+  }
+}

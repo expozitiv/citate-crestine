@@ -5,6 +5,8 @@ import '@payloadcms/next/css'
 import { handleServerFunctions, RootLayout } from '@payloadcms/next/layouts'
 import React from 'react'
 
+import { adminFontVars } from '@/components/admin/fonts'
+
 import { importMap } from './admin/importMap.js'
 import './custom.scss'
 
@@ -22,7 +24,12 @@ const serverFunction: ServerFunctionClient = async function (args) {
 }
 
 const Layout = ({ children }: Args) => (
-  <RootLayout config={config} importMap={importMap} serverFunction={serverFunction}>
+  <RootLayout
+    config={config}
+    htmlProps={{ className: adminFontVars }}
+    importMap={importMap}
+    serverFunction={serverFunction}
+  >
     {children}
   </RootLayout>
 )
