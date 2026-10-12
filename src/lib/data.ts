@@ -65,6 +65,8 @@ export type CitatDoc = {
 
 export type TemaCuNumar = TemaDoc & { numar: number }
 
+export type AutorCuNumar = AutorDoc & { numar: number }
+
 /* ------------------------------------------------------------------ */
 /* Interogări                                                          */
 /* ------------------------------------------------------------------ */
@@ -145,6 +147,27 @@ export const getDinAntologie = async (limit = 5): Promise<CitatDoc[]> => {
   return res.docs as CitatDoc[]
 }
 
+type SqlTag = (strings: TemplateStringsArray, ...values: unknown[]) => unknown
+
+/**
+ * Rulează un SELECT agregat direct pe Postgres (prin drizzle) — pentru contoare
+ * pe care Payload le-ar obține doar cu câte un query per document.
+ * La eroare (ex. schema încă goală) întoarce listă goală.
+ */
+const sqlRows = async <T>(query: (sql: SqlTag) => unknown): Promise<T[]> => {
+  const payload = await getPayloadClient()
+  try {
+    const db = (payload.db as { drizzle?: { execute: (q: unknown) => Promise<{ rows: unknown[] }> } })
+      .drizzle
+    if (!db) return []
+    const { sql } = await import('@payloadcms/db-postgres/drizzle')
+    const result = await db.execute(query(sql as unknown as SqlTag))
+    return result.rows as T[]
+  } catch {
+    return []
+  }
+}
+
 /** Toate temele cu numărul de citate asociate (un singur query SQL agregat). */
 export const getTemeCuNumar = async (): Promise<TemaCuNumar[]> => {
   const payload = await getPayloadClient()
@@ -153,21 +176,11 @@ export const getTemeCuNumar = async (): Promise<TemaCuNumar[]> => {
   ).docs as TemaDoc[]
 
   const counts = new Map<number, number>()
-  try {
-    const db = (payload.db as { drizzle?: { execute: (q: unknown) => Promise<{ rows: unknown[] }> } })
-      .drizzle
-    if (db) {
-      const { sql } = await import('@payloadcms/db-postgres/drizzle')
-      const result = await db.execute(
-        sql`SELECT teme_id AS id, COUNT(*)::int AS numar FROM citate_rels WHERE path = 'teme' AND teme_id IS NOT NULL GROUP BY teme_id`,
-      )
-      for (const row of result.rows as { id: number; numar: number }[]) {
-        counts.set(Number(row.id), Number(row.numar))
-      }
-    }
-  } catch {
-    // Fallback (ex. schema încă goală): fără contoare.
-  }
+  const rows = await sqlRows<{ id: number; numar: number }>(
+    (sql) =>
+      sql`SELECT teme_id AS id, COUNT(*)::int AS numar FROM citate_rels WHERE path = 'teme' AND teme_id IS NOT NULL GROUP BY teme_id`,
+  )
+  for (const row of rows) counts.set(Number(row.id), Number(row.numar))
 
   return teme
     .map((t) => ({ ...t, numar: counts.get(t.id) ?? 0 }))
@@ -216,6 +229,32 @@ export const getAutori = async (): Promise<AutorDoc[]> => {
     depth: 1,
   })
   return res.docs as AutorDoc[]
+}
+
+/** Toți autorii cu numărul de citate (un singur query agregat), ordonați după nume. */
+export const getAutoriCuNumar = async (): Promise<AutorCuNumar[]> => {
+  const autori = await getAutori()
+  const counts = new Map<number, number>()
+  const rows = await sqlRows<{ id: number; numar: number }>(
+    (sql) => sql`SELECT autor_id AS id, COUNT(*)::int AS numar FROM citate GROUP BY autor_id`,
+  )
+  for (const row of rows) counts.set(Number(row.id), Number(row.numar))
+  return autori.map((a) => ({ ...a, numar: counts.get(a.id) ?? 0 }))
+}
+
+/**
+ * ID-urile autorilor care au citate în aceleași volume ca autorul dat
+ * (antologii, cărți scrise în doi), ordonați după numărul de citate comune.
+ */
+export const getCoautoriIds = async (autorId: number): Promise<number[]> => {
+  const rows = await sqlRows<{ id: number }>(
+    (sql) =>
+      sql`SELECT autor_id AS id, COUNT(*)::int AS numar FROM citate
+          WHERE autor_id <> ${autorId}
+            AND carte_id IN (SELECT DISTINCT carte_id FROM citate WHERE autor_id = ${autorId} AND carte_id IS NOT NULL)
+          GROUP BY autor_id ORDER BY numar DESC`,
+  )
+  return rows.map((r) => Number(r.id))
 }
 
 export const getAutorBySlug = async (slug: string): Promise<AutorDoc | null> => {

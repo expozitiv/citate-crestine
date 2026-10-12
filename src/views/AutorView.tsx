@@ -6,15 +6,20 @@ import React from 'react'
 
 import { Atribuire, Paginare } from '@/components/Citate'
 import { SiteHeader } from '@/components/SiteHeader'
+import { sorteazaDupaFamilie } from '@/lib/autori'
 import {
-  countCitateByAutor,
   getAutorBySlug,
-  getAutori,
+  getAutoriCuNumar,
   getCartiByAutor,
   getCitateByAutor,
+  getCoautoriIds,
+  type AutorCuNumar,
   type CarteDoc,
 } from '@/lib/data'
 import { imagineUrl, numarRo } from '@/lib/format'
+
+/** Câți „alți autori” recomandăm sub sursele autorului. */
+const ALTI_AUTORI = 6
 
 export async function metadataAutor(slug: string, pagina: number): Promise<Metadata> {
   const autor = await getAutorBySlug(slug)
@@ -52,26 +57,49 @@ const SursaCarte = ({ carte }: { carte: CarteDoc }) => {
   )
 }
 
+/**
+ * „Alți autori în antologie”: întâi coautorii din aceleași volume (antologii,
+ * cărți scrise în doi), apoi cei mai citați autori — cel mult ALTI_AUTORI, fără repetări.
+ */
+const alegeAltiAutori = (
+  toti: AutorCuNumar[],
+  curent: number,
+  coautoriIds: number[],
+): AutorCuNumar[] => {
+  const dupaId = new Map(toti.map((a) => [a.id, a]))
+  const alesi: AutorCuNumar[] = []
+  const vazuti = new Set<number>([curent])
+  const adauga = (a: AutorCuNumar | undefined) => {
+    if (!a || vazuti.has(a.id) || a.numar === 0 || alesi.length >= ALTI_AUTORI) return
+    vazuti.add(a.id)
+    alesi.push(a)
+  }
+  for (const id of coautoriIds) adauga(dupaId.get(id))
+  for (const a of [...toti].sort((x, y) => y.numar - x.numar)) adauga(a)
+  return alesi
+}
+
 export async function AutorView({ slug, pagina }: { slug: string; pagina: number }) {
   const autor = await getAutorBySlug(slug)
   if (!autor) notFound()
 
-  const [totiAutorii, citate, carti] = await Promise.all([
-    getAutori(),
+  const [totiAutorii, citate, carti, coautoriIds] = await Promise.all([
+    getAutoriCuNumar(),
     getCitateByAutor(autor.id, pagina),
     getCartiByAutor(autor.id),
+    getCoautoriIds(autor.id),
   ])
   if (pagina > 1 && citate.docs.length === 0) notFound()
 
   const portret = imagineUrl(autor.imagine)
-  const altiAutori = totiAutorii.filter((a) => a.id !== autor.id)
-  const altiAutoriDetalii = await Promise.all(
-    altiAutori.map(async (a) => ({
-      autor: a,
-      numar: await countCitateByAutor(a.id),
-      carti: await getCartiByAutor(a.id),
-    })),
-  )
+
+  /* Vecinii alfabetici (după numele de familie), ca răsfoirea unei antologii. */
+  const index = sorteazaDupaFamilie(totiAutorii.filter((a) => a.numar > 0))
+  const pozitie = index.findIndex((a) => a.id === autor.id)
+  const anterior = pozitie > 0 ? index[pozitie - 1] : null
+  const urmator = pozitie >= 0 && pozitie < index.length - 1 ? index[pozitie + 1] : null
+
+  const altiAutori = alegeAltiAutori(totiAutorii, autor.id, coautoriIds)
 
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
   const jsonLd = {
@@ -92,19 +120,26 @@ export async function AutorView({ slug, pagina }: { slug: string; pagina: number
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {totiAutorii.length > 1 && (
-          <div className="linie-hair doar-desktop">
-            <nav className="banda-autori wrap" aria-label="Autori">
-              <span className="banda-autori__eticheta">autori:</span>
-              {totiAutorii.map((a) => (
-                <Link
-                  key={a.id}
-                  href={`/autori/${a.slug}`}
-                  className={a.id === autor.id ? 'nav-activ' : undefined}
-                >
-                  {a.nume.toLocaleLowerCase('ro')}
-                </Link>
-              ))}
+        {index.length > 1 && (
+          <div className="linie-hair">
+            <nav className="nav-vecini wrap" aria-label="Autori vecini în index">
+              <span className="nav-vecini__lateral">
+                {anterior && (
+                  <Link href={`/autori/${anterior.slug}`} rel="prev">
+                    ‹ {anterior.nume}
+                  </Link>
+                )}
+              </span>
+              <Link href="/autori" className="nav-vecini__index">
+                autorii antologiei
+              </Link>
+              <span className="nav-vecini__lateral nav-vecini__lateral--dreapta">
+                {urmator && (
+                  <Link href={`/autori/${urmator.slug}`} rel="next">
+                    {urmator.nume} ›
+                  </Link>
+                )}
+              </span>
             </nav>
           </div>
         )}
@@ -168,50 +203,41 @@ export async function AutorView({ slug, pagina }: { slug: string; pagina: number
           />
         </section>
 
-        {carti.length > 0 && (
+        {(carti.length > 0 || altiAutori.length > 0) && (
           <section className="banda-surse">
             <div className="banda-surse__inner wrap">
-              <div className="eticheta banda-surse__eticheta">SURSELE ANTOLOGIEI</div>
-              <div className="banda-surse__grid">
-                {carti.map((carte) => (
-                  <SursaCarte key={carte.id} carte={carte} />
-                ))}
-              </div>
-              {altiAutoriDetalii.map(({ autor: alt, numar, carti: cartiAlt }) => {
-                const portretAlt = imagineUrl(alt.imagine)
-                const carteAlt = cartiAlt[0]
-                return (
-                  <div key={alt.id} className="alt-autor">
-                    {portretAlt && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={portretAlt}
-                        alt={alt.nume}
-                        className="alt-autor__medalion"
-                        width={52}
-                        height={52}
-                      />
-                    )}
-                    <div>
-                      <span className="alt-autor__eticheta">alt autor în antologie</span>{' '}
-                      &nbsp;{' '}
-                      <Link href={`/autori/${alt.slug}`} className="link-serif">
-                        {alt.nume}
-                      </Link>
-                      {numar > 0 && carteAlt ? (
-                        <>
-                          {' '}
-                          — {numarRo(numar)} {numar === 1 ? 'citat' : 'citate'} din{' '}
-                          <Link href={`/carti/${carteAlt.slug}`} className="link-carte">
-                            {carteAlt.numeComplet || carteAlt.nume}
-                          </Link>
-                          {carteAlt.editura ? `, ${carteAlt.editura}` : ''}
-                        </>
-                      ) : null}
-                    </div>
+              {carti.length > 0 && (
+                <>
+                  <div className="eticheta banda-surse__eticheta">SURSELE ANTOLOGIEI</div>
+                  <div className="banda-surse__grid">
+                    {carti.map((carte) => (
+                      <SursaCarte key={carte.id} carte={carte} />
+                    ))}
                   </div>
-                )
-              })}
+                </>
+              )}
+              {altiAutori.length > 0 && (
+                <div className={`alti-autori${carti.length > 0 ? ' alti-autori--separat' : ''}`}>
+                  <div className="alti-autori__antet">
+                    <span className="eticheta">ALȚI AUTORI ÎN ANTOLOGIE</span>
+                    <Link href="/autori" className="alti-autori__index">
+                      toți autorii →
+                    </Link>
+                  </div>
+                  <div className="alti-autori__grid">
+                    {altiAutori.map((alt) => (
+                      <div key={alt.id} className="alti-autori__item">
+                        <Link href={`/autori/${alt.slug}`} className="link-serif">
+                          {alt.nume}
+                        </Link>
+                        <span className="alti-autori__numar">
+                          {numarRo(alt.numar)} {alt.numar === 1 ? 'citat' : 'citate'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </section>
         )}

@@ -4,78 +4,104 @@ import Link from 'next/link'
 import React from 'react'
 
 import { SiteHeader } from '@/components/SiteHeader'
-import { countCitateByAutor, getAutori } from '@/lib/data'
-import { imagineUrl, numarRo } from '@/lib/format'
+import { literaAutor, numeIndex, sorteazaDupaFamilie } from '@/lib/autori'
+import { getAutoriCuNumar, type AutorCuNumar } from '@/lib/data'
+import { numarRo } from '@/lib/format'
 
 export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Autorii antologiei',
-  description: 'Autorii citați în antologia Citate creștine.',
+  description:
+    'Indexul autorilor citați în antologia Citate creștine — de la puritani și reformatori la predicatori și teologi contemporani.',
   alternates: { canonical: '/autori' },
 }
 
+const CEI_MAI_CITATI = 8
+
+/**
+ * Indexul autorilor (același model ca indexul tematic): bandă verde cu alfabet,
+ * secțiuni pe litera numelui de familie, „Familie, Prenume” și numărul de citate.
+ */
 export default async function PaginaAutori() {
-  const autori = await getAutori()
-  const detalii = await Promise.all(
-    autori.map(async (autor) => ({ autor, numar: await countCitateByAutor(autor.id) })),
-  )
+  const autori = sorteazaDupaFamilie((await getAutoriCuNumar()).filter((a) => a.numar > 0))
+
+  const grupuri = new Map<string, AutorCuNumar[]>()
+  for (const autor of autori) {
+    const l = literaAutor(autor.nume)
+    const list = grupuri.get(l) ?? []
+    list.push(autor)
+    grupuri.set(l, list)
+  }
+  const litere = [...grupuri.keys()]
+
+  const ceiMaiCitati = [...autori].sort((a, b) => b.numar - a.numar).slice(0, CEI_MAI_CITATI)
+  const totalCitate = autori.reduce((s, a) => s + a.numar, 0)
 
   return (
     <>
-      <SiteHeader activ="autori" />
+      <SiteHeader activ="autori" searchPlaceholder="Caută un autor…" />
       <main>
-        <div className="linie-hair">
-          <section className="antet-pagina wrap">
-            <h1 className="antet-pagina__titlu" style={{ margin: 0 }}>
+        <section className="tema-hero">
+          <div className="tema-hero__inner wrap">
+            <h1 className="tema-hero__titlu" style={{ margin: 0 }}>
               Autorii antologiei
             </h1>
-            <div className="antet-pagina__descriere">
-              Fiecare autor, cu sursele și citatele lui — ca într-o antologie tipărită.
+            <div className="tema-hero__descriere">
+              {numarRo(autori.length)} de autori și {numarRo(totalCitate)} de citate — de la
+              puritani și reformatori la predicatori și teologi de azi, așezați după numele de
+              familie, ca într-o antologie tipărită.
+            </div>
+            {litere.length > 0 && (
+              <nav className="alfabet" aria-label="Index alfabetic">
+                {litere.map((l, i) => (
+                  <a key={l} href={`#litera-${l}`} className={i === 0 ? 'activ' : undefined}>
+                    {l.toLocaleLowerCase('ro')}
+                  </a>
+                ))}
+              </nav>
+            )}
+          </div>
+        </section>
+
+        {ceiMaiCitati.length > 0 && (
+          <section className="linie-hair">
+            <div className="autori-top wrap">
+              <div className="eticheta autori-top__eticheta">CEI MAI CITAȚI</div>
+              <div className="autori-top__lista">
+                {ceiMaiCitati.map((autor) => (
+                  <Link key={autor.id} href={`/autori/${autor.slug}`} className="autori-top__item">
+                    <span className="autori-top__nume">{autor.nume}</span>
+                    <span className="autori-top__numar">{numarRo(autor.numar)}</span>
+                  </Link>
+                ))}
+              </div>
             </div>
           </section>
-        </div>
+        )}
 
-        <section className="continut-lista">
-          {detalii.map(({ autor, numar }, i) => {
-            const portret = imagineUrl(autor.imagine)
-            return (
-              <React.Fragment key={autor.id}>
-                {i > 0 && <div className="hairline-citat" style={{ margin: '34px 0' }} />}
-                <article className="autor-card">
-                  {portret && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={portret}
-                      alt={autor.nume}
-                      className="medalion autor-card__medalion"
-                      width={96}
-                      height={96}
-                    />
-                  )}
-                  <div>
-                    <h2 className="autor-card__nume">
-                      <Link href={`/autori/${autor.slug}`} className="link-serif">
-                        {autor.nume}
-                      </Link>
-                    </h2>
-                    {(autor.ani || autor.descriere) && (
-                      <div className="autor-card__descriere">
-                        {[autor.ani, autor.descriere].filter(Boolean).join(' · ')}
-                      </div>
-                    )}
-                    <div className="autor-card__contor">
-                      {numarRo(numar)} {numar === 1 ? 'CITAT' : 'CITATE'}
-                    </div>
-                  </div>
-                </article>
-              </React.Fragment>
-            )
-          })}
-          {detalii.length === 0 && (
-            <p className="fara-rezultate">Nu există încă autori în antologie.</p>
-          )}
-        </section>
+        {litere.map((l) => (
+          <section key={l} id={`litera-${l}`} className="sectiune-litera wrap">
+            <div className="sectiune-litera__litera" aria-hidden="true">
+              {l}
+            </div>
+            <div className="sectiune-litera__grid">
+              {grupuri.get(l)!.map((autor) => (
+                <div key={autor.id} className="sectiune-litera__item">
+                  <span>
+                    <Link href={`/autori/${autor.slug}`}>{numeIndex(autor.nume)}</Link>
+                    {autor.ani && <span className="sectiune-litera__ani"> {autor.ani}</span>}
+                  </span>
+                  <span className="sectiune-litera__numar">{numarRo(autor.numar)}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+
+        {autori.length === 0 && (
+          <p className="fara-rezultate">Nu există încă autori în antologie.</p>
+        )}
       </main>
     </>
   )

@@ -1250,6 +1250,8 @@ button {
   font-weight: 340;
   line-height: 0.8;
   color: var(--border-medalion);
+  /* lățime fixă: grila secțiunilor se aliniază indiferent de litera (A vs D vs W) */
+  flex: 0 0 56px;
 }
 
 .sectiune-litera__grid {
@@ -1560,6 +1562,139 @@ button {
   font-size: 15px;
 }
 
+/* Indexul autorilor (/autori): anii în gri lângă nume */
+.sectiune-litera__ani {
+  font-size: 14px;
+  color: var(--text-tertiar);
+  white-space: nowrap;
+}
+
+/* „Cei mai citați” — rând serif sub banda verde a indexului de autori */
+.autori-top {
+  text-align: center;
+  padding: 26px 120px 28px;
+}
+
+.autori-top__eticheta {
+  margin-bottom: 14px;
+}
+
+.autori-top__lista {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 34px;
+}
+
+.autori-top__item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.autori-top__nume {
+  font-family: var(--fraunces);
+  font-size: 22px;
+  font-weight: 480;
+}
+
+.autori-top__item:hover .autori-top__nume {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--auriu-2);
+}
+
+.autori-top__numar {
+  font-family: var(--fira);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--text-tertiar);
+}
+
+/* Vecinii alfabetici ai autorului („‹ Boston · autorii antologiei · Brooks ›”) */
+.nav-vecini {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 72px;
+  font-family: var(--crimson);
+  font-size: 16px;
+  font-variant: small-caps;
+  letter-spacing: 0.14em;
+  color: var(--text-secundar);
+}
+
+.nav-vecini__lateral {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-vecini__lateral--dreapta {
+  text-align: right;
+}
+
+.nav-vecini__index {
+  color: var(--text-tertiar);
+  flex-shrink: 0;
+}
+
+.nav-vecini a:hover {
+  color: var(--verde);
+}
+
+/* „Alți autori în antologie” — bloc compact în banda crem a surselor */
+.alti-autori--separat {
+  border-top: 1px solid var(--hairline-crem);
+  margin-top: 24px;
+  padding-top: 22px;
+}
+
+.alti-autori__antet {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.alti-autori__index {
+  font-family: var(--crimson);
+  font-size: 16px;
+  font-style: italic;
+  color: var(--text-secundar);
+}
+
+.alti-autori__index:hover {
+  color: var(--verde);
+}
+
+.alti-autori__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px 48px;
+  font-family: var(--crimson);
+  font-size: 16.5px;
+  color: var(--text-surse);
+}
+
+.alti-autori__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  border-bottom: 1px solid var(--hairline-crem);
+  padding-bottom: 8px;
+}
+
+.alti-autori__numar {
+  font-size: 14px;
+  color: var(--text-tertiar);
+  white-space: nowrap;
+}
+
 /* --------------------------------------------------------------------------
    Pagini simple (despre / contact / căutare fără rezultate)
    -------------------------------------------------------------------------- */
@@ -1613,6 +1748,7 @@ button {
   .sectiune-litera,
   .autor-hero,
   .antet-pagina,
+  .autori-top,
   .banda-surse__inner {
     padding-inline: clamp(26px, 8vw, 120px);
   }
@@ -1621,7 +1757,8 @@ button {
   .masthead-search,
   .footer__principal,
   .footer__credite,
-  .banda-autori {
+  .banda-autori,
+  .nav-vecini {
     padding-inline: clamp(20px, 5vw, 72px);
   }
 
@@ -2009,5 +2146,30 @@ button {
   .alt-autor {
     font-size: 15.5px;
     align-items: flex-start;
+  }
+
+  .autori-top {
+    padding: 24px 26px 26px;
+  }
+
+  .autori-top__lista {
+    gap: 8px 22px;
+  }
+
+  .autori-top__nume {
+    font-size: 19px;
+  }
+
+  .nav-vecini {
+    padding: 10px 20px;
+    font-size: 14.5px;
+    letter-spacing: 0.1em;
+    gap: 12px;
+  }
+
+  .alti-autori__grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    font-size: 16px;
   }
 }
