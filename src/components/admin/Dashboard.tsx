@@ -76,6 +76,7 @@ export async function Dashboard({ payload, user }: AdminViewServerProps) {
     { eticheta: 'Teme', href: '/admin/collections/teme' },
     { eticheta: 'Media', href: '/admin/collections/media' },
     { eticheta: 'Utilizatori', href: '/admin/collections/users' },
+    { eticheta: 'Manualul editorului', href: '/admin/manual' },
   ]
 
   const numeUtilizator = user?.nume || user?.email?.split('@')[0]

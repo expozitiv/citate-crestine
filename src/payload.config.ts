@@ -37,7 +37,19 @@ export default buildConfig({
         dashboard: {
           Component: '/components/admin/Dashboard#Dashboard',
         },
+        // Manualul editorului — pagină proprie în admin, cu bara laterală (vezi Manual.tsx).
+        manual: {
+          Component: '/components/admin/Manual#Manual',
+          path: '/manual',
+          exact: true,
+          meta: {
+            title: 'Manualul editorului',
+            description: 'Cum se adaugă și se întrețin citatele, autorii, cărțile și temele.',
+          },
+        },
       },
+      beforeNavLinks: ['/components/admin/NavAcasa#NavAcasa'],
+      afterNavLinks: ['/components/admin/NavManual#NavManual'],
     },
     importMap: {
       baseDir: path.resolve(dirname),
