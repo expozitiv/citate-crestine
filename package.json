@@ -15,6 +15,7 @@
     "seed:citate": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-citate.ts",
     "import:excel": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/import-excel.ts",
     "backup:json": "node scripts/export-json.mjs",
+    "import:portrete": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/import-portrete.ts",
     "backup:db": "node scripts/backup.mjs"
   },
   "engines": {
