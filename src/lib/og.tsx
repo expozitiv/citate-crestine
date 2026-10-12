@@ -16,16 +16,18 @@ const TEXT = '#1d1b18'
 const TEXT_SURSE = '#4d4638'
 const TEXT_SECUNDAR = '#79715f'
 const HAIRLINE = '#e2d9c9'
+const AURIU = '#c9a86a'
 
 /**
- * Crimson Pro (subsetat exact pe caracterele cardului, cu diacritice) —
- * fontul implicit al satori nu acoperă ș/ț. La eșec se randează cu fallback.
+ * Font de la Google Fonts, subsetat exact pe caracterele imaginii (cu diacritice) —
+ * fontul implicit al satori nu acoperă ș/ț. `familie` e specificația css2
+ * (ex. `Crimson+Pro:wght@500`). La eșec se randează cu fallback.
  */
-const crimsonFont = async (text: string): Promise<ArrayBuffer | null> => {
+const fontGoogle = async (familie: string, text: string): Promise<ArrayBuffer | null> => {
   try {
     const css = await (
       await fetch(
-        `https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@500&text=${encodeURIComponent(text)}`,
+        `https://fonts.googleapis.com/css2?family=${familie}&text=${encodeURIComponent(text)}`,
       )
     ).text()
     const url = css.match(/url\((https:[^)]+)\)/)?.[1]
@@ -35,6 +37,8 @@ const crimsonFont = async (text: string): Promise<ArrayBuffer | null> => {
     return null
   }
 }
+
+const crimsonFont = (text: string) => fontGoogle('Crimson+Pro:wght@500', text)
 
 const raspuns = async (element: React.ReactElement, textFolosit: string) => {
   const font = await crimsonFont(textFolosit)
@@ -174,5 +178,152 @@ export const siteOgImage = async (): Promise<ImageResponse> => {
       </div>
     </div>,
     tot,
+  )
+}
+
+/* --------------------------------------------------------------------------
+   Imaginea de distribuit (1080×1080, pătrat — Instagram / WhatsApp / Facebook):
+   citatul, autorul și volumul, semnătura site-ului — în paleta și tipografia
+   paginii citatului (Fraunces pentru text, ghilimea și filet auriu, Fira Sans
+   pentru atribuire). Descărcată de butonul „distribuie imaginea”.
+   -------------------------------------------------------------------------- */
+
+export const SHARE_SIZE = { width: 1080, height: 1080 }
+
+/** Mărimea textului scade treptat cu lungimea citatului, ca să încapă în pătrat. */
+const marimeCitat = (lungime: number): number => {
+  if (lungime <= 90) return 64
+  if (lungime <= 160) return 56
+  if (lungime <= 240) return 48
+  if (lungime <= 340) return 42
+  if (lungime <= 460) return 36
+  return 32
+}
+
+export const citatShareImage = async (
+  text: string,
+  autor?: string | null,
+  carte?: string | null,
+  slug?: string,
+): Promise<ImageResponse> => {
+  const citat = trunchiat(text, 600)
+  const autorCaps = autor?.toLocaleUpperCase('ro') ?? ''
+  const carteCaps = carte?.toLocaleUpperCase('ro') ?? ''
+  const semnatura = 'CITATE CREȘTINE'
+  const site = 'CITATECRESTINE.RO'
+
+  const [fraunces, fira] = await Promise.all([
+    fontGoogle('Fraunces:wght@440', `„${citat}`),
+    fontGoogle('Fira+Sans:wght@500', `${autorCaps}${carteCaps}${semnatura}${site}`),
+  ])
+
+  const fonts = [
+    fraunces && { name: 'Fraunces', data: fraunces, weight: 400 as const, style: 'normal' as const },
+    fira && { name: 'Fira Sans', data: fira, weight: 500 as const, style: 'normal' as const },
+  ].filter((f): f is NonNullable<typeof f> => Boolean(f))
+
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          background: FOND,
+          fontFamily: 'Fraunces, Georgia, serif',
+        }}
+      >
+        <div style={{ height: 14, background: VERDE, display: 'flex' }} />
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: '40px 96px 60px',
+          }}
+        >
+          {/* Ghilimea aurie — ca `.ghilimea` din CSS: cutie fixă, aliniată jos, decupată */}
+          <div
+            style={{
+              height: 120,
+              overflow: 'hidden',
+              fontSize: 210,
+              lineHeight: 1,
+              color: AURIU,
+              display: 'flex',
+              alignItems: 'flex-end',
+              marginBottom: 14,
+            }}
+          >
+            „
+          </div>
+          <div
+            style={{
+              fontSize: marimeCitat(citat.length),
+              lineHeight: 1.28,
+              color: TEXT,
+              display: 'flex',
+            }}
+          >
+            {citat}
+          </div>
+          <div style={{ width: 56, height: 2, background: AURIU, marginTop: 40, display: 'flex' }} />
+          {autorCaps && (
+            <div
+              style={{
+                fontFamily: 'Fira Sans, system-ui, sans-serif',
+                fontSize: 23,
+                letterSpacing: 5,
+                color: TEXT_SURSE,
+                marginTop: 30,
+                display: 'flex',
+              }}
+            >
+              {autorCaps}
+            </div>
+          )}
+          {carteCaps && (
+            <div
+              style={{
+                fontFamily: 'Fira Sans, system-ui, sans-serif',
+                fontSize: 18,
+                letterSpacing: 3.5,
+                color: TEXT_SECUNDAR,
+                marginTop: autorCaps ? 12 : 30,
+                display: 'flex',
+              }}
+            >
+              {carteCaps}
+            </div>
+          )}
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            margin: '0 96px',
+            padding: '30px 0 42px',
+            borderTop: `1px solid ${HAIRLINE}`,
+            fontFamily: 'Fira Sans, system-ui, sans-serif',
+            fontSize: 20,
+            letterSpacing: 4,
+          }}
+        >
+          <div style={{ display: 'flex', color: TEXT_SECUNDAR }}>{semnatura}</div>
+          <div style={{ display: 'flex', color: VERDE }}>{site}</div>
+        </div>
+      </div>
+    ),
+    {
+      ...SHARE_SIZE,
+      fonts: fonts.length ? fonts : undefined,
+      headers: {
+        'Content-Disposition': `inline; filename="citat${slug ? `-${slug}` : ''}.png"`,
+        'Cache-Control': 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
+      },
+    },
   )
 }

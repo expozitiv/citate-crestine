@@ -175,7 +175,12 @@ export default async function PaginaCitat({ params }: Props) {
               <TemeLinkuri teme={teme} />
             </div>
           )}
-          <ShareActions text={citat.text} autor={autor?.nume ?? 'Citate creștine'} url={url} />
+          <ShareActions
+            text={citat.text}
+            autor={autor?.nume ?? 'Citate creștine'}
+            url={url}
+            slug={citat.slug}
+          />
         </article>
 
         {inrudite.length > 0 && (

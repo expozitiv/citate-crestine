@@ -71,6 +71,11 @@ export async function CarteView({ slug, pagina }: { slug: string; pagina: number
                 <> · {[carte.editura, carte.an].filter(Boolean).join(', ')}</>
               )}
             </div>
+            {carte.descriere && (
+              <div className="antet-pagina__descriere" style={{ marginTop: 4 }}>
+                {carte.descriere}
+              </div>
+            )}
             {carte.url && (
               <div className="antet-pagina__descriere" style={{ marginTop: 4 }}>
                 <a href={carte.url} rel="noopener" target="_blank" className="link-carte">

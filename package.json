@@ -13,6 +13,8 @@
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "seed:design": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts",
     "seed:citate": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-citate.ts",
+    "import:excel": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/import-excel.ts",
+    "backup:json": "node scripts/export-json.mjs",
     "backup:db": "node scripts/backup.mjs"
   },
   "engines": {
@@ -38,6 +40,7 @@
     "@types/react-dom": "^19.2.4",
     "puppeteer-core": "^25.8.0",
     "tsx": "^4.23.12",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "xlsx": "^0.18.5"
   }
 }

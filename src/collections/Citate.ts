@@ -83,7 +83,10 @@ export const Citate: CollectionConfig = {
         description: 'Opțional — sursa citatului. Lista se filtrează după autorul selectat.',
       },
       // Backoffice: după selectarea autorului se pot alege doar cărțile lui.
-      filterOptions: ({ siblingData }) => {
+      // Payload validează filtrul și la creare; importul (antologii cu alt autor
+      // pe carte decât al citatului) îl ocolește prin req.context.import.
+      filterOptions: ({ siblingData, req }) => {
+        if (req?.context?.import === true) return true
         const autor = (siblingData as { autor?: number | string })?.autor
         if (autor) {
           return { autor: { equals: autor } }

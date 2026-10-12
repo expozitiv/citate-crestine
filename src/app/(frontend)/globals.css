@@ -1131,6 +1131,18 @@ button {
   color: var(--verde);
 }
 
+/* „distribuie imaginea” cât timp se generează PNG-ul */
+.buton-outline:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.buton-outline:disabled:hover {
+  background: transparent;
+  border-color: var(--border-outline-stins);
+  color: var(--text-secundar);
+}
+
 /* Banda crem „Alte citate despre …” */
 .banda-inrudite {
   background: var(--fond-crem);

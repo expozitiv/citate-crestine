@@ -2,25 +2,37 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 
+type StareImagine = 'gata' | 'genereaza' | 'eroare'
+
+const ETICHETA_IMAGINE: Record<StareImagine, string> = {
+  gata: 'distribuie imaginea',
+  genereaza: 'se generează…',
+  eroare: 'nu s-a putut genera',
+}
+
 /**
  * Acțiunile paginii citatului:
  * - „distribuie ↗” — Web Share API nativ; fallback popover (copiază link,
  *   WhatsApp / Facebook / X) unde API-ul nu există;
- * - „copiază textul” / „copiază linkul” — clipboard + confirmare discretă
- *   (eticheta devine „copiat” timp de 2s).
+ * - „copiază textul” — clipboard + confirmare discretă (eticheta devine
+ *   „copiat” timp de 2s);
+ * - „distribuie imaginea” — cere PNG-ul pătrat generat de `/[slug]/imagine`
+ *   și îl trimite în share sheet-ul nativ (mobil) sau îl descarcă (desktop).
  */
 export const ShareActions = ({
   text,
   autor,
   url,
+  slug,
 }: {
   text: string
   autor: string
   url: string
+  slug: string
 }) => {
   const [copiatText, setCopiatText] = useState(false)
-  const [copiatLink, setCopiatLink] = useState(false)
   const [popover, setPopover] = useState(false)
+  const [imagine, setImagine] = useState<StareImagine>('gata')
   const popoverRef = useRef<HTMLDivElement>(null)
 
   const textIntreg = `„${text}” — ${autor}`
@@ -58,6 +70,45 @@ export const ShareActions = ({
     }
   }
 
+  const descarca = (blob: Blob, nume: string) => {
+    const href = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = href
+    a.download = nume
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    setTimeout(() => URL.revokeObjectURL(href), 1000)
+  }
+
+  const distribuieImagine = async () => {
+    if (imagine === 'genereaza') return
+    setImagine('genereaza')
+    try {
+      const raspuns = await fetch(`/${slug}/imagine`)
+      if (!raspuns.ok) throw new Error(`HTTP ${raspuns.status}`)
+      const blob = await raspuns.blob()
+      const nume = `citat-${slug}.png`
+      const fisier = new File([blob], nume, { type: 'image/png' })
+      setImagine('gata')
+
+      if (navigator.canShare?.({ files: [fisier] })) {
+        try {
+          await navigator.share({ files: [fisier], title: 'Citate creștine', text: textIntreg })
+        } catch (e) {
+          // anulat de utilizator — nimic de făcut; orice altă eroare
+          // (ex. activarea de utilizator a expirat pe Safari) → descărcăm
+          if (!(e instanceof DOMException && e.name === 'AbortError')) descarca(blob, nume)
+        }
+      } else {
+        descarca(blob, nume)
+      }
+    } catch {
+      setImagine('eroare')
+      setTimeout(() => setImagine('gata'), 2500)
+    }
+  }
+
   const encodedUrl = encodeURIComponent(url)
   const encodedText = encodeURIComponent(textIntreg)
 
@@ -72,7 +123,7 @@ export const ShareActions = ({
             <button
               type="button"
               onClick={() => {
-                void copiaza(url, setCopiatLink)
+                void copiaza(url, () => undefined)
                 setPopover(false)
               }}
             >
@@ -113,9 +164,11 @@ export const ShareActions = ({
         <button
           type="button"
           className="buton-outline buton-outline--stins"
-          onClick={() => void copiaza(url, setCopiatLink)}
+          onClick={() => void distribuieImagine()}
+          disabled={imagine === 'genereaza'}
+          aria-busy={imagine === 'genereaza'}
         >
-          {copiatLink ? 'copiat' : 'copiază linkul'}
+          {ETICHETA_IMAGINE[imagine]}
         </button>
       </span>
     </div>

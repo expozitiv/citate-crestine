@@ -42,6 +42,7 @@ export type CarteDoc = {
   an?: number | null
   editura?: string | null
   numeComplet?: string | null
+  descriere?: string | null
 }
 
 export type TemaDoc = {

@@ -104,6 +104,15 @@ export const Carti: CollectionConfig = {
       },
     },
     {
+      name: 'descriere',
+      label: 'Descriere',
+      type: 'textarea',
+      admin: {
+        description:
+          'Opțional — afișată pe pagina cărții sub autor/editură (ex. coautorii unui volum colectiv).',
+      },
+    },
+    {
       name: 'numeNorm',
       type: 'text',
       index: true,

@@ -234,6 +234,10 @@ export interface Carti {
    * Opțional — titlul complet afișat în banda „Sursele antologiei” (ex. „Roua dimineții. Meditații devoționale…”).
    */
   numeComplet?: string | null;
+  /**
+   * Opțional — afișată pe pagina cărții sub autor/editură (ex. coautorii unui volum colectiv).
+   */
+  descriere?: string | null;
   numeNorm?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -417,6 +421,7 @@ export interface CartiSelect<T extends boolean = true> {
   an?: T;
   editura?: T;
   numeComplet?: T;
+  descriere?: T;
   numeNorm?: T;
   updatedAt?: T;
   createdAt?: T;
