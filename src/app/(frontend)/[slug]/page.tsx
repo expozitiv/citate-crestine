@@ -11,7 +11,7 @@ import { getCitatBySlug, getCitateInrudite } from '@/lib/data'
 import { autorDoc, carteDoc, imagineUrl, temeDocs } from '@/lib/format'
 import { RESERVED_SLUGS } from '@/lib/slug'
 
-export const revalidate = 3600
+export const revalidate = 2592000 // 30 de zile; modificările din admin invalidează țintit (lib/revalidate.ts)
 
 /* Paginile citatelor (~22.000) se generează la cerere și se cache-uiesc (ISR). */
 export const dynamicParams = true

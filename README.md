@@ -29,12 +29,21 @@ Rute publice: `/` · `/[slug]` (pagina citatului, cu slug-uri rezervate protejat
 
 ### Performanță / cache
 
-Paginile publice sunt statice cu ISR (revalidate 1h; homepage 10min pentru
-citatul zilei). Orice modificare din Payload Admin invalidează tot cache-ul de
-rute (`revalidatePath('/', 'layout')` din hook-urile colecțiilor) — predictibil
-și corect pentru un site read-heavy cu modificări rare. Paginarea listelor este
-pe segmente de rută (`/pagina/2`), nu pe query string, ca paginile să rămână
-cache-uibile. Doar `/cautare` este dinamică.
+Paginile publice sunt statice cu ISR de lungă durată (30 de zile; homepage 1h
+pentru citatul zilei; sitemap-uri 1 zi). Modificările din Payload Admin
+invalidează ȚINTIT doar paginile pe care documentul apare (`src/lib/revalidate.ts`):
+un citat → pagina lui, listele autorului / cărții / temelor (cu
+paginare), home și indexurile; un autor / o carte / o temă → paginile proprii,
+sau tot cache-ul dacă s-a schimbat un câmp afișat pe citate (nume, slug, portret…).
+Invalidarea globală rămâne la `/api/revalidate?token=…` (după importuri externe).
+
+Motivul: pe Vercel fiecare regenerare a unei pagini ISR este un „ISR Write”
+contorizat (200.000/lună pe planul gratuit); site-ul are ~25.000 de intrări
+(citate + liste cu paginare), deci o invalidare globală la fiecare salvare
+epuiza cota. `src/proxy.ts` răspunde 404 direct pentru adrese care nu pot fi
+slug-uri (`/wp-login.php`, `/.env`), ca boții să nu umple cache-ul cu pagini 404.
+Paginarea listelor este pe segmente de rută (`/pagina/2`), nu pe query string, ca
+paginile să rămână cache-uibile. Doar `/cautare` este dinamică.
 
 ### Căutare
 

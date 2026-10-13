@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { revalidateContent } from '@/lib/revalidate'
+import { carteAfterChange, carteAfterDelete } from '@/lib/revalidate'
 import { normalize, slugify } from '@/lib/slug'
 import { ensureUniqueSlug } from '@/lib/uniqueSlug'
 
@@ -40,8 +40,8 @@ export const Carti: CollectionConfig = {
         return data
       },
     ],
-    afterChange: [() => revalidateContent()],
-    afterDelete: [() => revalidateContent()],
+    afterChange: [carteAfterChange],
+    afterDelete: [carteAfterDelete],
   },
   fields: [
     {

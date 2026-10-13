@@ -10,7 +10,7 @@ import { autorDoc, carteDoc, dataLunga, dataScurta, imagineUrl, temeDocs } from 
 
 /* Read-heavy: pagină statică, regenerată la 10 minute (citatul zilei se
    schimbă la miezul nopții) și invalidată la orice modificare din Admin. */
-export const revalidate = 600
+export const revalidate = 3600 // o oră; citatul zilei se schimbă o dată pe zi, restul se invalidează la salvare
 
 export const metadata: Metadata = { alternates: { canonical: '/' } }
 

@@ -7,7 +7,7 @@ import { SiteHeader } from '@/components/SiteHeader'
 import { getCitateByTema, getTemeCuNumar, type TemaCuNumar } from '@/lib/data'
 import { autorDoc, carteDoc } from '@/lib/format'
 
-export const revalidate = 3600
+export const revalidate = 2592000 // 30 de zile; modificările din admin invalidează țintit (lib/revalidate.ts)
 
 export const metadata: Metadata = {
   title: 'Indexul tematic',

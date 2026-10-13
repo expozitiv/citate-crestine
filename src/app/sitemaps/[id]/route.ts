@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 
 import { numarChunkuri, sitemapCitate, sitemapStatic, urlsetXml } from '@/lib/sitemap'
 
-export const revalidate = 3600
+export const revalidate = 86400 // o zi
 
 /** Sitemap-urile individuale: 0 = static + colecții mici; 1..n = citate. */
 export async function GET(

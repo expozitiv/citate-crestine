@@ -517,12 +517,20 @@ export function Manual({ initPageResult, params, searchParams }: AdminViewServer
             <h2>9. Când apar modificările pe site</h2>
             <ul>
               <li>
-                <strong>Imediat</strong> după salvare, pentru orice citat, autor, carte sau temă
-                modificat din panou. Site-ul își reface singur paginile.
+                <strong>Imediat</strong> după salvare, pe paginile unde apare documentul: un citat
+                modificat își reface pagina, listele autorului, cărții și temelor lui, homepage-ul
+                și indexurile. Benzile „Alte citate despre …” de pe celelalte pagini de citat se
+                refac mai târziu, de la sine.
               </li>
               <li>
-                <strong>Homepage-ul</strong> se regenerează la cel mult 10 minute. „Din antologie”
-                arată ultimele 5 citate adăugate, deci un citat nou apare acolo repede.
+                <strong>Autor, carte, temă</strong>: dacă schimbi un câmp care apare pe citate
+                (nume, slug, ani, descriere scurtă, portret, an, editură), se reface tot site-ul;
+                altfel doar paginile proprii. Nu salva de multe ori la rând astfel de modificări:
+                fiecare refacere completă a site-ului consumă din cota de pe Vercel.
+              </li>
+              <li>
+                <strong>Homepage-ul</strong> se regenerează la cel mult o oră, și imediat la orice
+                citat nou. „Din antologie” arată ultimele 5 citate adăugate.
               </li>
               <li>
                 <strong>Citatul zilei</strong> se alege automat, același pentru toți vizitatorii în

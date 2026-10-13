@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 
 import { CarteView, metadataCarte } from '@/views/CarteView'
 
-export const revalidate = 3600
+export const revalidate = 2592000 // 30 de zile; modificările din admin invalidează țintit (lib/revalidate.ts)
 export const dynamicParams = true
 
 export function generateStaticParams() {

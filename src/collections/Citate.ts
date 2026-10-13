@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { revalidateContent } from '@/lib/revalidate'
+import { citatAfterChange, citatAfterDelete } from '@/lib/revalidate'
 import { normalize, quoteSlug, slugify } from '@/lib/slug'
 import { ensureUniqueSlug } from '@/lib/uniqueSlug'
 
@@ -44,8 +44,8 @@ export const Citate: CollectionConfig = {
         return data
       },
     ],
-    afterChange: [() => revalidateContent()],
-    afterDelete: [() => revalidateContent()],
+    afterChange: [citatAfterChange],
+    afterDelete: [citatAfterDelete],
   },
   fields: [
     {

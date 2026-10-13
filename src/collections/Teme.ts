@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { revalidateContent } from '@/lib/revalidate'
+import { temaAfterChange, temaAfterDelete } from '@/lib/revalidate'
 import { normalize, slugify } from '@/lib/slug'
 import { ensureUniqueSlug } from '@/lib/uniqueSlug'
 
@@ -40,8 +40,8 @@ export const Teme: CollectionConfig = {
         return data
       },
     ],
-    afterChange: [() => revalidateContent()],
-    afterDelete: [() => revalidateContent()],
+    afterChange: [temaAfterChange],
+    afterDelete: [temaAfterDelete],
   },
   fields: [
     {

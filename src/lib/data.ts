@@ -1,12 +1,12 @@
 import config from '@payload-config'
 import { getPayload, type Payload, type PaginatedDocs, type Where } from 'payload'
 
+import { PAGE_SIZE } from './paginare'
 import { normalize } from './slug'
 
-export const getPayloadClient = (): Promise<Payload> => getPayload({ config })
+export { PAGE_SIZE }
 
-/** Câte citate pe pagină în listele publice (temă, autor, carte, căutare). */
-export const PAGE_SIZE = 20
+export const getPayloadClient = (): Promise<Payload> => getPayload({ config })
 
 /* ------------------------------------------------------------------ */
 /* Tipuri minime pentru documentele folosite pe frontend               */

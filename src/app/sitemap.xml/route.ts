@@ -1,6 +1,6 @@
 import { numarChunkuri, SERVER_URL } from '@/lib/sitemap'
 
-export const revalidate = 3600
+export const revalidate = 86400 // o zi
 
 /** Indexul de sitemap-uri: trimite către /sitemaps/0 … /sitemaps/n. */
 export async function GET(): Promise<Response> {

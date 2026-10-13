@@ -8,7 +8,7 @@ import { literaAutor, numeIndex, sorteazaDupaFamilie } from '@/lib/autori'
 import { getAutoriCuNumar, type AutorCuNumar } from '@/lib/data'
 import { numarRo } from '@/lib/format'
 
-export const revalidate = 3600
+export const revalidate = 2592000 // 30 de zile; modificările din admin invalidează țintit (lib/revalidate.ts)
 
 export const metadata: Metadata = {
   title: 'Autorii antologiei',
