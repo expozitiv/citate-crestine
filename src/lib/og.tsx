@@ -47,6 +47,11 @@ const raspuns = async (element: React.ReactElement, textFolosit: string) => {
     fonts: font
       ? [{ name: 'Crimson Pro', data: font, weight: 500 as const, style: 'normal' as const }]
       : undefined,
+    // Ruta OG e dinamică (citește citatul din bază și fontul de la Google la fiecare
+    // cerere); CDN-ul Vercel o reține o săptămână, ca distribuirile repetate să nu coste.
+    headers: {
+      'Cache-Control': 'public, max-age=3600, s-maxage=604800, stale-while-revalidate=604800',
+    },
   })
 }
 

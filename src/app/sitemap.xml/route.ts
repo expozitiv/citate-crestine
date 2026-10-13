@@ -1,4 +1,4 @@
-import { numarChunkuri, SERVER_URL } from '@/lib/sitemap'
+import { CACHE_SITEMAP, numarChunkuri, SERVER_URL } from '@/lib/sitemap'
 
 export const revalidate = 86400 // o zi
 
@@ -12,5 +12,7 @@ export async function GET(): Promise<Response> {
 ${ids.map((id) => `  <sitemap><loc>${SERVER_URL}/sitemaps/${id}</loc></sitemap>`).join('\n')}
 </sitemapindex>`
 
-  return new Response(xml, { headers: { 'Content-Type': 'application/xml' } })
+  return new Response(xml, {
+    headers: { 'Content-Type': 'application/xml', 'Cache-Control': CACHE_SITEMAP },
+  })
 }

@@ -3,6 +3,13 @@ import { countCitate, getPayloadClient } from './data'
 export const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 export const SITEMAP_CHUNK = 5000
 
+/**
+ * Sitemap-urile cu segment dinamic sunt rute dinamice (fără generateStaticParams),
+ * deci ar citi baza la fiecare cerere a crawlerelor. Antetul lasă CDN-ul Vercel
+ * să le servească o zi, cu reîmprospătare în fundal.
+ */
+export const CACHE_SITEMAP = 'public, s-maxage=86400, stale-while-revalidate=86400'
+
 type Intrare = { url: string; lastModified?: string }
 
 const xmlEscape = (s: string): string =>

@@ -1,6 +1,12 @@
 import { notFound } from 'next/navigation'
 
-import { numarChunkuri, sitemapCitate, sitemapStatic, urlsetXml } from '@/lib/sitemap'
+import {
+  CACHE_SITEMAP,
+  numarChunkuri,
+  sitemapCitate,
+  sitemapStatic,
+  urlsetXml,
+} from '@/lib/sitemap'
 
 export const revalidate = 86400 // o zi
 
@@ -19,6 +25,6 @@ export async function GET(
   const intrari = id === 0 ? await sitemapStatic() : await sitemapCitate(id)
 
   return new Response(urlsetXml(intrari), {
-    headers: { 'Content-Type': 'application/xml' },
+    headers: { 'Content-Type': 'application/xml', 'Cache-Control': CACHE_SITEMAP },
   })
 }

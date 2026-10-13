@@ -31,6 +31,17 @@ export const Media: CollectionConfig = {
     ],
     mimeTypes: ['image/*'],
     staticDir: 'media',
+    // Fișierele sunt servite prin /api/media/file/* (Payload citește din S3 la fiecare
+    // cerere). Fără Cache-Control, CDN-ul Vercel nu le reține și fiecare afișare a unui
+    // portret descarcă fișierul din Supabase (egress). Numele fișierelor sunt unice
+    // (Payload adaugă sufix la coliziuni), deci cache-ul lung e sigur.
+    modifyResponseHeaders: ({ headers }) => {
+      headers.set(
+        'Cache-Control',
+        'public, max-age=86400, s-maxage=31536000, stale-while-revalidate=604800',
+      )
+      return headers
+    },
   },
   fields: [
     {
