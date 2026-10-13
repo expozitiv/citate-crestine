@@ -1,9 +1,12 @@
 import Link from 'next/link'
 import React from 'react'
 
+import { NewsletterForm } from './NewsletterForm'
+
 /**
  * Footer negru standard: bară verde 3px, logo + tagline, citat central + ✠,
- * doar contact în nav (meniul complet e în header), bara de credits și copyright.
+ * doar contact în nav (meniul complet e în header), banda de abonare la
+ * newsletter, bara de credits și copyright.
  * Pe mobil: varianta condensată, centrată (macheta 3a/3b).
  */
 export const SiteFooter = () => (
@@ -33,6 +36,11 @@ export const SiteFooter = () => (
         </a>
       </nav>
     </div>
+    <div className="footer__abonare-outer">
+      <div className="footer__abonare wrap">
+        <NewsletterForm />
+      </div>
+    </div>
     <div className="footer__credite-outer">
       <div className="footer__credite wrap">
         <span>O INIȚIATIVĂ A EDITURII MAGNA GRATIA</span>
@@ -60,6 +68,7 @@ export const SiteFooter = () => (
       <nav className="footer__mobil-nav" aria-label="Meniu footer">
         <Link href="/contact">contact</Link>
       </nav>
+      <NewsletterForm compact />
       <div className="footer__mobil-copyright">
         citatecrestine.ro · Asociația Magna Gratia | © 2005–2026
         <br />

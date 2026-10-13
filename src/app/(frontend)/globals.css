@@ -863,6 +863,125 @@ button {
   color: var(--auriu);
 }
 
+/* Abonare la newsletter — bandă între blocul principal și credite */
+.footer__abonare-outer {
+  border-top: 1px solid #35312a;
+}
+
+.footer__abonare {
+  padding: 26px 72px 28px;
+}
+
+.abonare {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+}
+
+.abonare__titlu {
+  font-family: var(--fraunces);
+  font-size: 21px;
+  font-weight: 500;
+  color: var(--text-footer);
+}
+
+.abonare__descriere {
+  font-family: var(--crimson);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--text-meta);
+  margin-top: 4px;
+  max-width: 460px;
+}
+
+.abonare__form {
+  flex: 0 0 auto;
+  width: 440px;
+  max-width: 100%;
+}
+
+.abonare__camp {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #4a4438;
+  background: #26231f;
+}
+
+.abonare__camp input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--crimson);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--text-footer);
+  padding: 12px 18px;
+  outline: none;
+}
+
+.abonare__camp input::placeholder {
+  color: var(--text-meta);
+  opacity: 1;
+}
+
+.abonare__camp:focus-within {
+  border-color: var(--auriu-2);
+}
+
+.abonare__camp button {
+  padding: 0 24px;
+  background: var(--verde);
+  color: var(--verde-pal);
+  font-family: var(--crimson);
+  font-size: 15.5px;
+  font-variant: small-caps;
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.abonare__camp button:hover {
+  background: var(--verde-hover);
+}
+
+.abonare__camp button:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.abonare__mesaj {
+  margin-top: 10px;
+  font-family: var(--crimson);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--auriu);
+}
+
+.abonare__mesaj--eroare {
+  color: #d9906f;
+}
+
+/* Varianta compactă (footer mobil): centrată, pe o coloană */
+.abonare--compact {
+  flex-direction: column;
+  gap: 14px;
+  margin: 22px 0 26px;
+}
+
+.abonare--compact .abonare__titlu {
+  font-size: 19px;
+}
+
+.abonare--compact .abonare__descriere {
+  font-size: 14.5px;
+}
+
+.abonare--compact .abonare__form {
+  width: 100%;
+}
+
 .footer__credite-outer {
   border-top: 1px solid #35312a;
 }
@@ -1814,6 +1933,7 @@ button {
   .masthead,
   .masthead-search,
   .footer__principal,
+  .footer__abonare,
   .footer__credite,
   .banda-autori,
   .nav-vecini {
@@ -1994,6 +2114,7 @@ button {
 
   /* Footer: varianta condensată */
   .footer__principal,
+  .footer__abonare-outer,
   .footer__credite-outer,
   .footer__copyright {
     display: none;
