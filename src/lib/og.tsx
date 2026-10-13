@@ -38,7 +38,7 @@ const fontGoogle = async (familie: string, text: string): Promise<ArrayBuffer | 
   }
 }
 
-const crimsonFont = (text: string) => fontGoogle('Crimson+Pro:wght@500', text)
+export const crimsonFont = (text: string) => fontGoogle('Crimson+Pro:wght@500', text)
 
 const raspuns = async (element: React.ReactElement, textFolosit: string) => {
   const font = await crimsonFont(textFolosit)

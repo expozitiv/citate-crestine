@@ -69,7 +69,7 @@ export default function PaginaDespre() {
             <p>
               „Marile doctrine ale creștinismului sunt adevărurile pe care Duhul Sfânt…”, Prenume
               Nume autor, <em>Titlul cărții</em>, Editura MAGNA GRATIA,{' '}
-              <a href="https://citate-crestine.ro/">https://citate-crestine.ro/…</a>
+              <a href="https://citatecrestine.ro/">https://citatecrestine.ro/…</a>
             </p>
           </div>
         </section>
