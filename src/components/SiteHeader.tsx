@@ -2,7 +2,7 @@ import Link from 'next/link'
 import React from 'react'
 
 import { MobileHeader } from './MobileMenu'
-import { NAV_LINKS, type NavKey } from './nav'
+import { NAV_LINKS, navLinkProps, type NavKey } from './nav'
 import { SearchForm } from './SearchForm'
 
 /**
@@ -28,7 +28,11 @@ export const SiteHeader = ({
       </Link>
       <nav className="header-interior__nav" aria-label="Meniu principal">
         {NAV_LINKS.map((l) => (
-          <Link key={l.key} href={l.href} className={activ === l.key ? 'nav-activ' : undefined}>
+          <Link
+            key={l.key}
+            href={l.href}
+            {...navLinkProps(l, activ === l.key ? 'nav-activ' : undefined)}
+          >
             {l.label}
           </Link>
         ))}
@@ -56,7 +60,7 @@ export const HomeHeader = () => (
       <div className="filet masthead__filet" />
       <nav className="masthead__nav" aria-label="Meniu principal">
         {NAV_LINKS.map((l) => (
-          <Link key={l.key} href={l.href}>
+          <Link key={l.key} href={l.href} {...navLinkProps(l)}>
             {l.label}
           </Link>
         ))}

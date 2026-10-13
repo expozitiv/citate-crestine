@@ -14,19 +14,22 @@ const ETICHETA_IMAGINE: Record<StareImagine, string> = {
  * Acțiunile paginii citatului:
  * - „distribuie ↗” — Web Share API nativ; fallback popover (copiază link,
  *   WhatsApp / Facebook / X) unde API-ul nu există;
- * - „copiază textul” — clipboard + confirmare discretă (eticheta devine
- *   „copiat” timp de 2s);
+ * - „copiază textul” — clipboard (citat, autor, titlul cărții) + confirmare
+ *   discretă (eticheta devine „copiat” timp de 2s);
  * - „distribuie imaginea” — cere PNG-ul pătrat generat de `/[slug]/imagine`
  *   și îl trimite în share sheet-ul nativ (mobil) sau îl descarcă (desktop).
  */
 export const ShareActions = ({
   text,
   autor,
+  carte,
   url,
   slug,
 }: {
   text: string
   autor: string
+  /** Titlul cărții — intră în textul copiat/distribuit, pentru citare corectă. */
+  carte?: string
   url: string
   slug: string
 }) => {
@@ -35,7 +38,7 @@ export const ShareActions = ({
   const [imagine, setImagine] = useState<StareImagine>('gata')
   const popoverRef = useRef<HTMLDivElement>(null)
 
-  const textIntreg = `„${text}” — ${autor}`
+  const textIntreg = `„${text}” — ${autor}${carte ? `, ${carte}` : ''}`
 
   useEffect(() => {
     if (!popover) return

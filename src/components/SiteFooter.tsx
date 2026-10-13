@@ -35,7 +35,7 @@ export const SiteFooter = () => (
     </div>
     <div className="footer__credite-outer">
       <div className="footer__credite wrap">
-        <span>O INIȚIATIVĂ ASOCIATĂ EDITURII MAGNA GRATIA</span>
+        <span>O INIȚIATIVĂ A EDITURII MAGNA GRATIA</span>
         <span>TRADUCERI FOLOSITE CU PERMISIUNE</span>
         <span>
           REALIZAT DE{' '}

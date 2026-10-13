@@ -178,6 +178,7 @@ export default async function PaginaCitat({ params }: Props) {
           <ShareActions
             text={citat.text}
             autor={autor?.nume ?? 'Citate creștine'}
+            carte={carte?.nume}
             url={url}
             slug={citat.slug}
           />

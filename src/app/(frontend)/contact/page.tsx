@@ -8,7 +8,7 @@ export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Contact',
-  description: 'Contact — Citate creștine, o inițiativă asociată editurii MAGNA GRATIA.',
+  description: 'Contact — Citate creștine, o inițiativă a Editurii MAGNA GRATIA.',
   alternates: { canonical: '/contact' },
 }
 

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
 
-import { NAV_LINKS } from './nav'
+import { NAV_LINKS, navLinkProps } from './nav'
 import { SearchForm } from './SearchForm'
 
 /**
@@ -39,7 +39,7 @@ export const MobileHeader = ({
       {deschis && (
         <nav className="meniu-mobil" aria-label="Meniu principal">
           {NAV_LINKS.map((l) => (
-            <Link key={l.href} href={l.href} onClick={() => setDeschis(false)}>
+            <Link key={l.href} href={l.href} onClick={() => setDeschis(false)} {...navLinkProps(l)}>
               {l.label}
             </Link>
           ))}

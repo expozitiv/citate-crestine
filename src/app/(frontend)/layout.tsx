@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     template: '%s — Citate creștine',
   },
   description:
-    'O antologie teologică în limba română: peste 20.000 de citate curate, organizate pe subiecte și autori. O inițiativă asociată editurii MAGNA GRATIA.',
+    'O antologie teologică în limba română: peste 20.000 de citate curate, organizate pe subiecte și autori. O inițiativă a Editurii MAGNA GRATIA.',
   openGraph: {
     siteName: 'Citate creștine',
     locale: 'ro_RO',
