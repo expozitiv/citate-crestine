@@ -5,6 +5,7 @@ import { Crimson_Pro, Fira_Sans, Fraunces } from 'next/font/google'
 import React from 'react'
 
 import { SiteFooter } from '@/components/SiteFooter'
+import { VercelAnalytics } from '@/components/VercelAnalytics'
 
 import './globals.css'
 
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="bara-verde-sus" />
         {children}
         <SiteFooter />
+        <VercelAnalytics />
       </body>
     </html>
   )

@@ -42,5 +42,5 @@ export function proxy(request: NextRequest): NextResponse {
 }
 
 export const config = {
-  matcher: ['/((?!_next/|api/|admin).*)'],
+  matcher: ['/((?!_next/|_vercel/|api/|admin).*)'],
 }
