@@ -62,16 +62,46 @@ export default function PaginaDespre() {
             Citarea pe care o recomandăm ar trebui să ia forma următoare: citat, Prenume Nume
             autor, <em>Titlul cărții</em>, editură, hyperlink.
           </p>
-          {/* TODO: exemplul de mai jos e incomplet — textul primit de la editor s-a oprit la
-              „Duhul Sfân…”; de completat cu citatul întreg, autorul, titlul și linkul. */}
           <div className="exemplu">
             <div className="eticheta">Exemplu</div>
             <p>
-              „Marile doctrine ale creștinismului sunt adevărurile pe care Duhul Sfânt…”, Prenume
-              Nume autor, <em>Titlul cărții</em>, Editura MAGNA GRATIA,{' '}
-              <a href="https://citatecrestine.ro/">https://citatecrestine.ro/…</a>
+              „Marile doctrine ale creștinismului sunt adevărurile pe care Duhul Sfânt le folosește
+              atunci când regenerează sufletele păcătoșilor.” — Ichabod Spencer,{' '}
+              <em>Silește-i să intre</em>, Editura MAGNA GRATIA,{' '}
+              <a href="https://www.magnagratia.org/carti/120-sketches-spencer/" rel="noopener">
+                https://www.magnagratia.org/carti/120-sketches-spencer/
+              </a>
             </p>
           </div>
+
+          <h3>În predici, prelegeri sau alte circumstanțe verbale</h3>
+          <p>
+            În contexte oficiale sau publice în care citatele sunt folosite verbal, citarea
+            recomandată ar trebui să menționeze cel puțin textul citatului (nu o reformulare a
+            acestuia) și numele autorului, iar acolo unde contextul permite, și titlul cărții,
+            pentru a fi ușor identificabilă sursa de către persoanele din audiență.
+          </p>
+
+          <h3>Drepturi de autor</h3>
+          <p>
+            Resursele de pe acest website se supun legislației privind drepturile de autor și
+            drepturile conexe, ca și regulilor de copyright ale Asociației și Editurii MAGNA
+            GRATIA, care pot fi consultate la{' '}
+            <a href="https://www.magnagratia.org/copyright/" rel="noopener">
+              www.magnagratia.org/copyright
+            </a>
+            .
+          </p>
+          <p>
+            Duplicarea acestui website sau crearea de produse sau aplicații, comerciale sau
+            non-comerciale, folosind conținutul de pe acest website, fără permisiune prealabilă
+            scrisă, este interzisă.
+          </p>
+          <p>
+            Pentru orice neclarități sau întrebări legate de citare și utilizarea resurselor de pe
+            acest website, vă rugăm să ne scrieți la{' '}
+            <a href="mailto:contact@magnagratia.org">contact@magnagratia.org</a>.
+          </p>
         </section>
       </main>
     </>
