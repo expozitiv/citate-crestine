@@ -108,43 +108,79 @@ const startOfDayBucharest = (): string => {
 }
 
 /**
- * Citatul zilei: determinist pe zi (seed = data), stabil între request-uri.
- * Selecția se face doar dintre citatele create înainte de miezul nopții curent,
- * ca adăugările de pe parcursul zilei să nu schimbe citatul deja afișat —
- * ele intră în „bazinul” de mâine. Pagina e cache-uită prin ISR.
+ * Bazinul zilnic: citatele create înainte de miezul nopții curent (ora
+ * României), ca adăugările de pe parcursul zilei să nu schimbe selecțiile deja
+ * afișate — ele intră în bazinul de mâine. Pe o bază nouă, cu toate citatele
+ * create azi, se folosește întreaga antologie.
  */
-export const getCitatulZilei = async (): Promise<CitatDoc | null> => {
-  const payload = await getPayloadClient()
+const bazinZilei = async (
+  payload: Payload,
+): Promise<{ where: Where | undefined; totalDocs: number }> => {
   let where: Where | undefined = { createdAt: { less_than: startOfDayBucharest() } }
   let { totalDocs } = await payload.count({ collection: 'citate', where })
   if (totalDocs === 0) {
-    // Bază nouă, cu toate citatele create azi — folosim întreaga antologie.
     where = undefined
     totalDocs = (await payload.count({ collection: 'citate' })).totalDocs
-    if (totalDocs === 0) return null
   }
-  const index = fnv1a(todayBucharest()) % totalDocs
+  return { where, totalDocs }
+}
+
+/** Indicele (0-based, în bazin sortat după id) al citatului zilei. */
+const indiceCitatulZilei = (totalDocs: number): number => fnv1a(todayBucharest()) % totalDocs
+
+/** Al n-lea citat din bazin, în ordinea id-ului. */
+const citatLaIndice = async (
+  payload: Payload,
+  where: Where | undefined,
+  index: number,
+  depth: number,
+): Promise<CitatDoc | null> => {
   const res = await payload.find({
     collection: 'citate',
     where,
     sort: 'id',
     limit: 1,
     page: index + 1,
-    depth: 2, // populează și autor.imagine (medalionul din hero)
+    depth,
   })
   return (res.docs[0] as CitatDoc | undefined) ?? null
 }
 
-/** Selecție „Din antologie” pe homepage: cele mai recente citate. */
+/**
+ * Citatul zilei: determinist pe zi (seed = data), stabil între request-uri.
+ * Pagina e cache-uită prin ISR.
+ */
+export const getCitatulZilei = async (): Promise<CitatDoc | null> => {
+  const payload = await getPayloadClient()
+  const { where, totalDocs } = await bazinZilei(payload)
+  if (totalDocs === 0) return null
+  // depth 2: populează și autor.imagine (medalionul din hero)
+  return citatLaIndice(payload, where, indiceCitatulZilei(totalDocs), 2)
+}
+
+/**
+ * Selecția „Din antologie” de pe homepage: `limit` citate distincte, aceleași
+ * toată ziua și altele a doua zi (seed = data + contor), din același bazin ca
+ * citatul zilei și fără citatul zilei. Ordinea e cea dată de hash.
+ */
 export const getDinAntologie = async (limit = 5): Promise<CitatDoc[]> => {
   const payload = await getPayloadClient()
-  const res = await payload.find({
-    collection: 'citate',
-    sort: '-createdAt',
-    limit,
-    depth: 1,
-  })
-  return res.docs as CitatDoc[]
+  const { where, totalDocs } = await bazinZilei(payload)
+  const disponibile = Math.min(limit, Math.max(totalDocs - 1, 0))
+  if (disponibile === 0) return []
+
+  const ziua = todayBucharest()
+  const excluse = new Set<number>([indiceCitatulZilei(totalDocs)])
+  const indici: number[] = []
+  for (let k = 0; indici.length < disponibile; k++) {
+    let index = fnv1a(`${ziua}#${k}`) % totalDocs
+    while (excluse.has(index)) index = (index + 1) % totalDocs
+    excluse.add(index)
+    indici.push(index)
+  }
+
+  const citate = await Promise.all(indici.map((i) => citatLaIndice(payload, where, i, 1)))
+  return citate.filter((c): c is CitatDoc => c !== null)
 }
 
 type SqlTag = (strings: TemplateStringsArray, ...values: unknown[]) => unknown

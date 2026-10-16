@@ -8,9 +8,10 @@ import { HomeHeader } from '@/components/SiteHeader'
 import { getCitatulZilei, getDinAntologie, getTemePopulare } from '@/lib/data'
 import { autorDoc, carteDoc, dataLunga, dataScurta, imagineUrl, temeDocs } from '@/lib/format'
 
-/* Read-heavy: pagină statică, regenerată la 10 minute (citatul zilei se
-   schimbă la miezul nopții) și invalidată la orice modificare din Admin. */
-export const revalidate = 3600 // o oră; citatul zilei se schimbă o dată pe zi, restul se invalidează la salvare
+/* Read-heavy: pagină statică, regenerată la cel mult o oră și invalidată la
+   orice modificare din Admin. „Citatul zilei” și „Din antologie” se schimbă o
+   dată pe zi, la miezul nopții (ora României). */
+export const revalidate = 3600
 
 export const metadata: Metadata = { alternates: { canonical: '/' } }
 

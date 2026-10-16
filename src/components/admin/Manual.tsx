@@ -530,12 +530,17 @@ export function Manual({ initPageResult, params, searchParams }: AdminViewServer
               </li>
               <li>
                 <strong>Homepage-ul</strong> se regenerează la cel mult o oră, și imediat la orice
-                citat nou. „Din antologie” arată ultimele 5 citate adăugate.
+                citat nou.
               </li>
               <li>
                 <strong>Citatul zilei</strong> se alege automat, același pentru toți vizitatorii în
                 ziua respectivă, dintre citatele existente la miezul nopții. Un citat adăugat azi
                 poate deveni „citatul zilei” abia de mâine.
+              </li>
+              <li>
+                <strong>„Din antologie”</strong> funcționează la fel: 5 citate alese automat, aceleași
+                toată ziua și altele a doua zi, dintre citatele existente la miezul nopții. Nu se
+                aleg din Admin.
               </li>
               <li>
                 Dacă o pagină pare veche, reîncarc-o fără cache (Ctrl+F5). Dacă tot nu s-a
