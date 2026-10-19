@@ -47,6 +47,16 @@ export default buildConfig({
             description: 'Cum se adaugă și se întrețin citatele, autorii, cărțile și temele.',
           },
         },
+        // Media kit-ul — arhivă din bucket-ul R2 privat, descărcabilă doar din admin (vezi MediaKit.tsx).
+        mediaKit: {
+          Component: '/components/admin/MediaKit#MediaKit',
+          path: '/media-kit',
+          exact: true,
+          meta: {
+            title: 'Media kit',
+            description: 'Identitatea vizuală Citate creștine — arhivă pentru uz intern.',
+          },
+        },
       },
       beforeNavLinks: ['/components/admin/NavAcasa#NavAcasa'],
       afterNavLinks: ['/components/admin/NavManual#NavManual'],

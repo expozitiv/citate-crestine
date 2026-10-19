@@ -597,6 +597,16 @@ a.cc-dash__indicator:hover {
   a:hover {
     border-bottom-color: var(--cc-auriu-2);
   }
+
+  /* Butoanele din text (ex. „Descarcă” pe /admin/media-kit) își păstrează culorile. */
+  a.cc-dash__buton {
+    border-bottom: 0;
+  }
+
+  a.cc-dash__buton--plin,
+  a.cc-dash__buton--plin:hover {
+    color: var(--cc-verde-pal);
+  }
 }
 
 .cc-man__nota {
@@ -758,6 +768,10 @@ a.cc-dash__indicator:hover {
   font-size: 16px;
   color: var(--theme-elevation-800);
   text-decoration: none;
+}
+
+.cc-nav-manual__link + .cc-nav-manual__link {
+  margin-top: 8px;
 }
 
 .cc-nav-manual__link:hover {

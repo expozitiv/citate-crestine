@@ -3,6 +3,7 @@ import { NavAcasa as NavAcasa_17c5b04abfff43baa299564b2d7030fb } from '../../../
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { Dashboard as Dashboard_16b88e9b8c48e393fa86591406efd08f } from '../../../components/admin/Dashboard'
 import { Manual as Manual_b06b115a1e6f14fcd7234ea43fafb59f } from '../../../components/admin/Manual'
+import { MediaKit as MediaKit_eecd0e8a2e5f0ca17c39fb23ef7509a0 } from '../../../components/admin/MediaKit'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -12,5 +13,6 @@ export const importMap = {
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "/components/admin/Dashboard#Dashboard": Dashboard_16b88e9b8c48e393fa86591406efd08f,
   "/components/admin/Manual#Manual": Manual_b06b115a1e6f14fcd7234ea43fafb59f,
+  "/components/admin/MediaKit#MediaKit": MediaKit_eecd0e8a2e5f0ca17c39fb23ef7509a0,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }
