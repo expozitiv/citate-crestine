@@ -33,9 +33,50 @@
   --text-surse: #4d4638;
   --border-outline-stins: #cfc4af;
 
+  /* Accentul textului (linkuri, logo, nav activ) — verde; pe tema întunecată devine
+     auriu, fiindcă verdele ca text n-are contrast pe fond închis. Fundalurile verzi
+     (benzi, butoane pline) folosesc direct --verde pe ambele teme. */
+  --accent: var(--verde);
+  --accent-hover: var(--verde-hover);
+  --umbra: rgba(60, 45, 25, 0.35);
+  --umbra-fina: rgba(90, 70, 40, 0.08);
+
   --fraunces: var(--font-fraunces), 'Fraunces', Georgia, serif;
   --crimson: var(--font-crimson), 'Crimson Pro', Georgia, serif;
   --fira: var(--font-fira), 'Fira Sans', system-ui, sans-serif;
+
+  color-scheme: light;
+}
+
+/* Tema întunecată — `data-theme` pus pe <html> de scriptul din layout (src/lib/tema.ts).
+   Paleta: șablonul „întunecat” din brandbook — fond Cerneală, text Crem, accente aurii;
+   benzile verzi rămân verzi. Fără culori noi în afara brandbook-ului și a nuanțelor
+   deja folosite în footer. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --fond: #1d1b18;
+  --fond-crem: #26231f;
+  --fond-negru: #141310;
+  --fond-input: #26231f;
+  --text: #f3ecdf;
+  --text-secundar: #a39a85;
+  --text-tertiar: #8a8172;
+  --text-meta: #8f8676;
+  --text-surse: #d9d0bf;
+  --placeholder: #7d7565;
+  --hairline: #35312a;
+  --hairline-crem: #3d382f;
+  --hairline-lista: #2c2924;
+  --border-input: #4a4438;
+  --border-medalion: #4a4438;
+  --border-outline-stins: #4a4438;
+  --separator-teme: #4a4438;
+
+  --accent: #c9a86a;
+  --accent-hover: #f3ecdf;
+  --umbra: rgba(0, 0, 0, 0.55);
+  --umbra-fina: rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -66,7 +107,7 @@ a {
 
 /* Hover: adâncire de culoare / underline — fără mișcare (vezi README). */
 a:hover {
-  color: var(--verde);
+  color: var(--accent);
 }
 
 img {
@@ -110,7 +151,7 @@ button {
   font-family: var(--fira);
   font-size: 12px;
   letter-spacing: 0.24em;
-  color: var(--verde);
+  color: var(--accent);
   text-transform: uppercase;
 }
 
@@ -222,7 +263,7 @@ button {
   z-index: 30;
   background: var(--fond-input);
   border: 1px solid var(--border-input);
-  box-shadow: 0 10px 24px -12px rgba(60, 45, 25, 0.35);
+  box-shadow: 0 10px 24px -12px var(--umbra);
   text-align: left;
   max-height: 70vh;
   overflow-y: auto;
@@ -271,7 +312,7 @@ button {
 .sugestii__item--sc {
   font-variant: small-caps;
   letter-spacing: 0.12em;
-  color: var(--verde);
+  color: var(--accent);
 }
 
 .sugestii__item--citat {
@@ -295,7 +336,7 @@ button {
   font-family: var(--crimson);
   font-size: 15.5px;
   font-style: italic;
-  color: var(--verde);
+  color: var(--accent);
 }
 
 .sugestii__toate:hover {
@@ -346,7 +387,7 @@ button {
 .logo em {
   font-style: italic;
   font-weight: 480;
-  color: var(--verde);
+  color: var(--accent);
 }
 
 .masthead__tagline {
@@ -384,7 +425,7 @@ button {
 .masthead-search .searchbox {
   width: 640px;
   max-width: 100%;
-  box-shadow: inset 0 1px 3px rgba(90, 70, 40, 0.08);
+  box-shadow: inset 0 1px 3px var(--umbra-fina);
 }
 
 /* --------------------------------------------------------------------------
@@ -417,17 +458,17 @@ button {
 }
 
 .nav-activ {
-  color: var(--verde);
+  color: var(--accent);
   border-bottom: 2px solid var(--auriu);
 }
 
 /* „Susține” — accent discret: verde, despărțit printr-un filet subțire */
 .nav-sustine {
-  color: var(--verde);
+  color: var(--accent);
 }
 
 .nav-sustine:hover {
-  color: var(--verde-hover);
+  color: var(--accent-hover);
 }
 
 .masthead__nav .nav-sustine {
@@ -447,21 +488,43 @@ button {
   display: none;
 }
 
+/* Hamburger clasic — trei linii egale, cea din mijloc aurie (ca filetul).
+   Deschis: linia aurie dispare, cele exterioare formează un X. */
 .hamburger {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  padding: 10px 2px;
-  min-width: 44px;
-  min-height: 44px;
   align-items: flex-end;
   justify-content: center;
+  gap: 5px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px 2px;
 }
 
 .hamburger span {
   width: 24px;
   height: 2px;
   background: var(--text);
+  transition:
+    transform 0.25s ease,
+    opacity 0.2s ease;
+}
+
+.hamburger span:nth-child(2) {
+  background: var(--auriu);
+}
+
+/* 7px = înălțimea liniei + gap */
+.hamburger[aria-expanded='true'] span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger[aria-expanded='true'] span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger[aria-expanded='true'] span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 .header-mobil__logo {
@@ -473,7 +536,7 @@ button {
 .header-mobil__logo em {
   font-style: italic;
   font-weight: 480;
-  color: var(--verde);
+  color: var(--accent);
 }
 
 .meniu-mobil {
@@ -604,7 +667,7 @@ button {
 }
 
 .teme-linkuri a {
-  color: var(--verde);
+  color: var(--accent);
 }
 
 .teme-linkuri a:hover {
@@ -722,7 +785,7 @@ button {
 }
 
 .atribuire-tema {
-  color: var(--verde);
+  color: var(--accent);
   font-variant: small-caps;
   letter-spacing: 0.1em;
   font-size: 15px;
@@ -737,7 +800,7 @@ button {
   font-family: var(--crimson);
   font-size: 17px;
   font-style: italic;
-  color: var(--verde);
+  color: var(--accent);
 }
 
 .mai-multe a:hover {
@@ -1138,7 +1201,7 @@ button {
 }
 
 .pagina-citat__sursa-intern:hover {
-  color: var(--verde);
+  color: var(--accent);
   opacity: 1;
   transform: translateY(1px);
 }
@@ -1198,8 +1261,8 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--verde);
-  color: var(--verde);
+  border: 1px solid var(--accent);
+  color: var(--accent);
   padding: 11px 24px;
   font-family: var(--crimson);
   font-size: 16.5px;
@@ -1234,7 +1297,7 @@ button {
   min-width: 190px;
   background: var(--fond-input);
   border: 1px solid var(--border-input);
-  box-shadow: 0 6px 18px -8px rgba(60, 45, 25, 0.35);
+  box-shadow: 0 6px 18px -8px var(--umbra);
 }
 
 .popover a,
@@ -1255,7 +1318,7 @@ button {
 
 .popover a:hover,
 .popover button:hover {
-  color: var(--verde);
+  color: var(--accent);
 }
 
 .buton-outline--stins {
@@ -1265,8 +1328,8 @@ button {
 
 .buton-outline--stins:hover {
   background: transparent;
-  border-color: var(--verde);
-  color: var(--verde);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* „distribuie imaginea” cât timp se generează PNG-ul */
@@ -1476,7 +1539,7 @@ button {
   font-family: var(--fira);
   font-size: 12px;
   letter-spacing: 0.2em;
-  color: var(--verde);
+  color: var(--accent);
   margin-top: 14px;
   text-transform: uppercase;
 }
@@ -1501,7 +1564,7 @@ button {
 }
 
 .paginare a {
-  color: var(--verde);
+  color: var(--accent);
 }
 
 .paginare a:hover {
@@ -1543,7 +1606,7 @@ button {
   padding: 8px;
   border: 1px solid var(--border-medalion);
   border-radius: 50%;
-  box-shadow: 6px 4px 10px -6px rgba(60, 45, 25, 0.35);
+  box-shadow: 6px 4px 10px -6px var(--umbra);
 }
 
 .autor-hero__medalion {
@@ -1575,7 +1638,7 @@ button {
   font-family: var(--fira);
   font-size: 12px;
   letter-spacing: 0.2em;
-  color: var(--verde);
+  color: var(--accent);
   margin-top: 14px;
   text-transform: uppercase;
 }
@@ -1632,7 +1695,7 @@ button {
   font-family: var(--fira);
   font-size: 11px;
   letter-spacing: 0.2em;
-  color: var(--verde);
+  color: var(--accent);
   margin-top: 10px;
   text-transform: uppercase;
 }
@@ -1667,7 +1730,7 @@ button {
 
 .banda-surse__grid .link-carte:hover,
 .link-carte:hover {
-  color: var(--verde);
+  color: var(--accent);
 }
 
 .alt-autor {
@@ -1696,7 +1759,7 @@ button {
 .alt-autor__eticheta {
   font-variant: small-caps;
   letter-spacing: 0.14em;
-  color: var(--verde);
+  color: var(--accent);
   font-size: 15px;
 }
 
@@ -1781,7 +1844,7 @@ button {
 }
 
 .nav-vecini a:hover {
-  color: var(--verde);
+  color: var(--accent);
 }
 
 /* „Alți autori în antologie” — bloc compact în banda crem a surselor */
@@ -1806,7 +1869,7 @@ button {
 }
 
 .alti-autori__index:hover {
-  color: var(--verde);
+  color: var(--accent);
 }
 
 .alti-autori__grid {
@@ -1897,7 +1960,7 @@ button {
 }
 
 .pagina-simpla a {
-  color: var(--verde);
+  color: var(--accent);
   border-bottom: 1px solid var(--border-medalion);
 }
 
@@ -2351,4 +2414,57 @@ button {
     gap: 10px;
     font-size: 16px;
   }
+}
+
+/* --------------------------------------------------------------------------
+   Comutatorul de temă (ThemeToggle) — lună pe tema luminoasă, soare pe cea întunecată
+   -------------------------------------------------------------------------- */
+
+.tema-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: var(--text-secundar);
+  transition: color 0.2s ease;
+}
+
+.tema-toggle:hover {
+  color: var(--accent);
+}
+
+.tema-toggle svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tema-toggle__soare,
+:root[data-theme='dark'] .tema-toggle__luna {
+  display: none;
+}
+
+:root[data-theme='dark'] .tema-toggle__soare {
+  display: block;
+}
+
+.masthead__nav .tema-toggle {
+  align-self: center;
+  margin-left: -12px;
+}
+
+.header-mobil__actiuni {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.header-mobil__actiuni .tema-toggle {
+  width: 44px;
+  height: 44px;
 }

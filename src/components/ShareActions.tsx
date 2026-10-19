@@ -88,10 +88,12 @@ export const ShareActions = ({
     if (imagine === 'genereaza') return
     setImagine('genereaza')
     try {
-      const raspuns = await fetch(`/${slug}/imagine`)
+      // Imaginea urmează tema afișată acum (setată pe <html> de scriptul din layout).
+      const intunecat = document.documentElement.dataset.theme === 'dark'
+      const raspuns = await fetch(`/${slug}/imagine${intunecat ? '?tema=intunecat' : ''}`)
       if (!raspuns.ok) throw new Error(`HTTP ${raspuns.status}`)
       const blob = await raspuns.blob()
-      const nume = `citat-${slug}.png`
+      const nume = `citat-${slug}${intunecat ? '-intunecat' : ''}.png`
       const fisier = new File([blob], nume, { type: 'image/png' })
       setImagine('gata')
 

@@ -6,6 +6,7 @@ import React from 'react'
 
 import { SiteFooter } from '@/components/SiteFooter'
 import { VercelAnalytics } from '@/components/VercelAnalytics'
+import { SCRIPT_TEMA } from '@/lib/tema'
 
 import './globals.css'
 
@@ -59,7 +60,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ro" className={`${fraunces.variable} ${crimson.variable} ${fira.variable}`}>
+    // suppressHydrationWarning: `data-theme` e pus de SCRIPT_TEMA înainte de hidratare.
+    <html
+      lang="ro"
+      className={`${fraunces.variable} ${crimson.variable} ${fira.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: SCRIPT_TEMA }} />
+      </head>
       {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
       <body>
         <div className="bara-verde-sus" />

@@ -196,6 +196,31 @@ export const siteOgImage = async (): Promise<ImageResponse> => {
 export const SHARE_SIZE = { width: 1080, height: 1080 }
 
 /** Mărimea textului scade treptat cu lungimea citatului, ca să încapă în pătrat. */
+/** Variantele imaginii — „intunecat” e șablonul întunecat din brandbook (tema închisă a site-ului). */
+export type TemaImagine = 'luminos' | 'intunecat'
+
+const PALETE_SHARE: Record<
+  TemaImagine,
+  { fond: string; text: string; autor: string; carte: string; hairline: string; site: string }
+> = {
+  luminos: {
+    fond: FOND,
+    text: TEXT,
+    autor: TEXT_SURSE,
+    carte: TEXT_SECUNDAR,
+    hairline: HAIRLINE,
+    site: VERDE,
+  },
+  intunecat: {
+    fond: '#1d1b18',
+    text: '#f3ecdf',
+    autor: '#e8e0d2',
+    carte: '#a39a85',
+    hairline: '#35312a',
+    site: AURIU,
+  },
+}
+
 const marimeCitat = (lungime: number): number => {
   if (lungime <= 90) return 64
   if (lungime <= 160) return 56
@@ -210,7 +235,9 @@ export const citatShareImage = async (
   autor?: string | null,
   carte?: string | null,
   slug?: string,
+  tema: TemaImagine = 'luminos',
 ): Promise<ImageResponse> => {
+  const paleta = PALETE_SHARE[tema]
   const citat = trunchiat(text, 600)
   const autorCaps = autor?.toLocaleUpperCase('ro') ?? ''
   const carteCaps = carte?.toLocaleUpperCase('ro') ?? ''
@@ -235,7 +262,7 @@ export const citatShareImage = async (
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          background: FOND,
+          background: paleta.fond,
           fontFamily: 'Fraunces, Georgia, serif',
         }}
       >
@@ -268,7 +295,7 @@ export const citatShareImage = async (
             style={{
               fontSize: marimeCitat(citat.length),
               lineHeight: 1.28,
-              color: TEXT,
+              color: paleta.text,
               display: 'flex',
             }}
           >
@@ -281,7 +308,7 @@ export const citatShareImage = async (
                 fontFamily: 'Fira Sans, system-ui, sans-serif',
                 fontSize: 23,
                 letterSpacing: 5,
-                color: TEXT_SURSE,
+                color: paleta.autor,
                 marginTop: 30,
                 display: 'flex',
               }}
@@ -295,7 +322,7 @@ export const citatShareImage = async (
                 fontFamily: 'Fira Sans, system-ui, sans-serif',
                 fontSize: 18,
                 letterSpacing: 3.5,
-                color: TEXT_SECUNDAR,
+                color: paleta.carte,
                 marginTop: autorCaps ? 12 : 30,
                 display: 'flex',
               }}
@@ -311,14 +338,14 @@ export const citatShareImage = async (
             alignItems: 'center',
             margin: '0 96px',
             padding: '30px 0 42px',
-            borderTop: `1px solid ${HAIRLINE}`,
+            borderTop: `1px solid ${paleta.hairline}`,
             fontFamily: 'Fira Sans, system-ui, sans-serif',
             fontSize: 20,
             letterSpacing: 4,
           }}
         >
-          <div style={{ display: 'flex', color: TEXT_SECUNDAR }}>{semnatura}</div>
-          <div style={{ display: 'flex', color: VERDE }}>{site}</div>
+          <div style={{ display: 'flex', color: paleta.carte }}>{semnatura}</div>
+          <div style={{ display: 'flex', color: paleta.site }}>{site}</div>
         </div>
       </div>
     ),
@@ -326,7 +353,7 @@ export const citatShareImage = async (
       ...SHARE_SIZE,
       fonts: fonts.length ? fonts : undefined,
       headers: {
-        'Content-Disposition': `inline; filename="citat${slug ? `-${slug}` : ''}.png"`,
+        'Content-Disposition': `inline; filename="citat${slug ? `-${slug}` : ''}${tema === 'intunecat' ? '-intunecat' : ''}.png"`,
         'Cache-Control': 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
       },
     },

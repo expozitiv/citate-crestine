@@ -5,9 +5,10 @@ import React, { useState } from 'react'
 
 import { NAV_LINKS, navLinkProps } from './nav'
 import { SearchForm } from './SearchForm'
+import { ThemeToggle } from './ThemeToggle'
 
 /**
- * Header mobil complet: logo + hamburger (două linii 24×2px), meniul
+ * Header mobil complet: logo + hamburger (trei linii 24×2px, mijlocul auriu), meniul
  * dedesubt, apoi căutarea full-width — conform machetelor 3a/3b.
  */
 export const MobileHeader = ({
@@ -25,16 +26,20 @@ export const MobileHeader = ({
         <Link href="/" className="header-mobil__logo">
           Citate <em>creștine</em>
         </Link>
-        <button
-          type="button"
-          className="hamburger"
-          aria-label={deschis ? 'Închide meniul' : 'Deschide meniul'}
-          aria-expanded={deschis}
-          onClick={() => setDeschis((v) => !v)}
-        >
-          <span />
-          <span />
-        </button>
+        <div className="header-mobil__actiuni">
+          <ThemeToggle />
+          <button
+            type="button"
+            className="hamburger"
+            aria-label={deschis ? 'Închide meniul' : 'Deschide meniul'}
+            aria-expanded={deschis}
+            onClick={() => setDeschis((v) => !v)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
       </div>
       {deschis && (
         <nav className="meniu-mobil" aria-label="Meniu principal">

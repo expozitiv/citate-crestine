@@ -4,6 +4,7 @@ import React from 'react'
 import { MobileHeader } from './MobileMenu'
 import { NAV_LINKS, navLinkProps, type NavKey } from './nav'
 import { SearchForm } from './SearchForm'
+import { ThemeToggle } from './ThemeToggle'
 
 /**
  * Header-ul interior (paginile citat / teme / autori / cărți / căutare):
@@ -37,6 +38,7 @@ export const SiteHeader = ({
           </Link>
         ))}
           <SearchForm compact defaultValue={searchDefault} placeholder={searchPlaceholder} />
+          <ThemeToggle />
         </nav>
       </div>
     </div>
@@ -64,6 +66,7 @@ export const HomeHeader = () => (
             {l.label}
           </Link>
         ))}
+        <ThemeToggle />
       </nav>
     </div>
     <div className="linie-dubla doar-desktop">
