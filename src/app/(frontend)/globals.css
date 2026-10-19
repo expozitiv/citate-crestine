@@ -2453,9 +2453,11 @@ button {
   display: block;
 }
 
+/* Nav-ul din masthead e aliniat pe baseline: marginile negative păstrează zona de
+   clic de 36px fără să înalțe rândul, ca iconița să stea centrată pe text. */
 .masthead__nav .tema-toggle {
   align-self: center;
-  margin-left: -12px;
+  margin: -6px 0 -6px -12px;
 }
 
 .header-mobil__actiuni {
