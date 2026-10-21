@@ -1,4 +1,4 @@
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import type {
   CollectionAfterChangeHook,
   CollectionAfterDeleteHook,
@@ -37,8 +37,26 @@ const cale = (path: string, type?: 'page' | 'layout'): void => {
   }
 }
 
-/** Invalidarea întregului cache de rute. */
-export const revalidateContent = (): void => cale('/', 'layout')
+/**
+ * Tag-ul listei tuturor autorilor cu numărul de citate (`getAutoriCuNumar`, cache-ul de date
+ * Next). Se schimbă când se adaugă / mută / șterge un citat sau se modifică un autor.
+ */
+export const TAG_AUTORI_CU_NUMAR = 'autori-cu-numar'
+
+/** Expiră imediat lista autorilor, ca pagina regenerată imediat după să vadă contoarele noi. */
+const autoriCuNumar = (): void => {
+  try {
+    revalidateTag(TAG_AUTORI_CU_NUMAR, { expire: 0 })
+  } catch {
+    // Fără store Next (scripturi CLI) — nimic de invalidat.
+  }
+}
+
+/** Invalidarea întregului cache de rute (și a listei autorilor, care nu ține de o rută). */
+export const revalidateContent = (): void => {
+  autoriCuNumar()
+  cale('/', 'layout')
+}
 
 const relId = (v: Rel): number | null => {
   if (v == null) return null
@@ -168,6 +186,7 @@ const caiCitat = async (
 }
 
 export const citatAfterChange: CollectionAfterChangeHook = async ({ doc, previousDoc, req }) => {
+  autoriCuNumar()
   try {
     invalideaza(await caiCitat(req, doc, previousDoc))
   } catch {
@@ -177,6 +196,7 @@ export const citatAfterChange: CollectionAfterChangeHook = async ({ doc, previou
 }
 
 export const citatAfterDelete: CollectionAfterDeleteHook = async ({ doc, req }) => {
+  autoriCuNumar()
   try {
     invalideaza(await caiCitat(req, doc))
   } catch {
@@ -198,6 +218,7 @@ export const autorAfterChange: CollectionAfterChangeHook = async ({
   operation,
   req,
 }) => {
+  autoriCuNumar()
   try {
     if (operation === 'update' && previousDoc && campuriSchimbate(doc, previousDoc, AUTOR_PE_CITAT)) {
       // Numele / portretul apar pe toate citatele lui — invalidare globală.

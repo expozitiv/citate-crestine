@@ -6,20 +6,21 @@ Data: 21 oct 2026 · branch `perf/egress-db`
 
 | | Înainte | După (branch) | Scădere |
 |---|---:|---:|---:|
-| O trecere completă a crawlerelor (toate paginile ISR regenerate) | **1,39 GB** | **0,34 GB** | **−76%** |
+| O trecere completă a crawlerelor (toate paginile ISR regenerate) | **1,39 GB** | **0,28 GB** | **−80%** |
 | Pagina unui citat (22.000 de pagini) | 22,2 KB | 7,9 KB | −65% |
-| Pagina unui autor (1.312 pagini, cu paginare) | 551 KB | 62 KB | −89% |
+| Pagina unui autor (1.312 pagini, cu paginare) | 551 KB | 21 KB | −96% |
 | Pagina unei teme (2.311) | 62,7 KB | 29,8 KB | −52% |
 | Pagina unei cărți (1.872) | 18,2 KB | 6,5 KB | −64% |
 | Homepage | 97,8 KB | 22,9 KB | −77% |
+| Sitemap-uri (≈2,8 MB la fiecare reîmprospătare) | zilnic, ~84 MB/lună | săptămânal, ~12 MB/lună | −86% |
 
 Paginile rămân identice: am randat cu `master` și cu branch-ul aceleași 11 pagini (home,
 citat, autor + paginare, carte, temă + paginare, cele trei indexuri, căutare) și am comparat
 HTML-ul. Nu există nicio diferență.
 
 **Proiecție pe consumul real.** În graficul Supabase, 14–20 oct au avut în medie ~200 MB/zi
-(~6 GB/lună, peste cei 5 GB incluși în planul Free). Cu −76%, consumul ar ajunge la
-**~50 MB/zi, adică ~1,5 GB/lună**. Vârful din 13 oct (1,56 GB) corespunde aproape exact unei
+(~6 GB/lună, peste cei 5 GB incluși în planul Free). Cu −80%, consumul ar ajunge la
+**~40 MB/zi, adică ~1,2 GB/lună**. Vârful din 13 oct (1,56 GB) corespunde aproape exact unei
 treceri complete măsurate aici (1,39 GB). Asta confirmă modelul: ziua aceea a regenerat
 practic tot site-ul.
 
@@ -67,18 +68,30 @@ pornește gol, iar crawlerele (Google, Bing, boții AI) regenerează pagină cu 
 | `select` pe listele de citate (fără `textNorm` și câmpuri neafișate) | `src/lib/data.ts` | liste −15…−30% |
 | Temele din index/homepage doar cu nume și slug | `src/lib/data.ts` (`getTemeCuNumar`) | homepage 85 → 23 KB |
 | `cache()` din React pe `get…BySlug` (metadata și pagina împart interogarea) | `src/lib/data.ts` | citat 10,4 → 7,9 KB |
+| Lista tuturor autorilor în cache-ul de date Next (`unstable_cache`, tag `autori-cu-numar`), invalidată la salvarea / ștergerea unui citat sau autor și de `/api/revalidate` | `src/lib/data.ts`, `src/lib/revalidate.ts`, `src/app/api/revalidate/route.ts` | autor 62 → 21 KB (măsurat pe `next build && next start`) |
+| Sitemap-urile reîmprospătate săptămânal, nu zilnic (ISR și CDN) | `src/lib/sitemap.ts`, `src/app/sitemap.xml/route.ts`, `src/app/sitemaps/[id]/route.ts` | −72 MB/lună |
 
 Pagina autorului, a cărții și a temei își citesc în continuare documentul propriu complet.
 Interfața de admin nu e afectată: `defaultPopulate` se aplică doar la relațiile populate.
+
+Verificări pentru cache-ul listei de autori (pe un build de producție local):
+- pagina unui autor nu mai citește lista din bază (~21 KB în loc de ~62 KB) și afișează în
+  continuare „Alți autori”;
+- după mutarea unui citat de la un autor la altul prin API-ul Payload, `/autori` arată imediat
+  contoarele noi (244 → 243, 201 → 202);
+- `revalidate` al cache-ului e 30 de zile, ca al paginilor. Next ia minimul dintre ISR-ul
+  paginii și cache-urile folosite; o valoare de 1 zi ar fi scurtat ISR-ul paginilor de autor
+  la o zi (s-a văzut în `next build`).
+
+Efect secundar al sitemap-urilor săptămânale: un citat, autor sau carte nouă apare în sitemap
+cu până la 7 zile întârziere (pagina există și e legată intern imediat).
 
 ## 6. Ce mai rămâne, cu estimări
 
 | Pas următor | Câștig estimat pe o trecere | Cost / risc |
 |---|---:|---|
-| Lista tuturor autorilor (44 KB) pusă în cache-ul de date Next (`unstable_cache` + tag invalidat la salvarea unui autor sau citat): se citește o dată, nu pe fiecare pagină de autor | −58 MB (335 → ~277 MB, total −80%) | mic; e nevoie de invalidare în `revalidate.ts` |
 | Paginile de temă: Payload citește `text_norm` de două ori în interogarea cu join (sortare după text). O coloană scurtă de sortare ar elimina ~12 KB pe pagină | ~−28 MB | schimbare de schemă + backfill |
-| **Mai puține deploy-uri în producție** (grupate sau verificate întâi pe preview) | fiecare deploy evitat economisește până la o trecere (0,34 GB după optimizări, 1,39 GB înainte) | doar disciplină de lucru |
-| Sitemap-urile de citate (5 × 0,5 MB/zi) cu revalidare la 7 zile în loc de 1 | ~−60 MB/lună | Google vede citatele noi cu câteva zile întârziere |
+| **Mai puține deploy-uri în producție** (grupate sau verificate întâi pe preview) | fiecare deploy evitat economisește până la o trecere (0,28 GB după optimizări, 1,39 GB înainte) | doar disciplină de lucru |
 
 ## 7. Limitele studiului
 

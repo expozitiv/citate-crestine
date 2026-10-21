@@ -8,7 +8,7 @@ import {
   urlsetXml,
 } from '@/lib/sitemap'
 
-export const revalidate = 86400 // o zi
+export const revalidate = 604800 // 7 zile (literal: Next citește valoarea static); vezi CACHE_SITEMAP
 
 /** Sitemap-urile individuale: 0 = static + colecții mici; 1..n = citate. */
 export async function GET(

@@ -6,9 +6,12 @@ export const SITEMAP_CHUNK = 5000
 /**
  * Sitemap-urile cu segment dinamic sunt rute dinamice (fără generateStaticParams),
  * deci ar citi baza la fiecare cerere a crawlerelor. Antetul lasă CDN-ul Vercel
- * să le servească o zi, cu reîmprospătare în fundal.
+ * să le servească o săptămână, cu reîmprospătare în fundal: tranșele de citate au
+ * ~0,5 MB fiecare (egress Supabase), iar paginile noi sunt găsite oricum și prin
+ * linkurile interne — Google le află din sitemap cu cel mult câteva zile întârziere.
  */
-export const CACHE_SITEMAP = 'public, s-maxage=86400, stale-while-revalidate=86400'
+export const SITEMAP_REVALIDATE = 604800 // 7 zile — la fel ca `revalidate` din rutele de sitemap
+export const CACHE_SITEMAP = `public, s-maxage=${SITEMAP_REVALIDATE}, stale-while-revalidate=86400`
 
 type Intrare = { url: string; lastModified?: string }
 

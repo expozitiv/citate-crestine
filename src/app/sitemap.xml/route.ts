@@ -1,6 +1,6 @@
 import { CACHE_SITEMAP, numarChunkuri, SERVER_URL } from '@/lib/sitemap'
 
-export const revalidate = 86400 // o zi
+export const revalidate = 604800 // 7 zile (literal: Next citește valoarea static); vezi CACHE_SITEMAP
 
 /** Indexul de sitemap-uri: trimite către /sitemaps/0 … /sitemaps/n. */
 export async function GET(): Promise<Response> {

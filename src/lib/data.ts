@@ -1,8 +1,10 @@
 import config from '@payload-config'
+import { unstable_cache } from 'next/cache'
 import { getPayload, type Payload, type PaginatedDocs, type Where } from 'payload'
 import { cache } from 'react'
 
 import { PAGE_SIZE } from './paginare'
+import { TAG_AUTORI_CU_NUMAR } from './revalidate'
 import { normalize } from './slug'
 
 export { PAGE_SIZE }
@@ -290,14 +292,37 @@ export const getAutori = async (): Promise<AutorDoc[]> => {
 }
 
 /** Toți autorii cu numărul de citate (un singur query agregat), ordonați după nume. */
-export const getAutoriCuNumar = async (): Promise<AutorCuNumar[]> => {
+const citesteAutoriCuNumar = async (): Promise<AutorCuNumar[]> => {
   const autori = await getAutori()
   const counts = new Map<number, number>()
   const rows = await sqlRows<{ id: number; numar: number }>(
     (sql) => sql`SELECT autor_id AS id, COUNT(*)::int AS numar FROM citate GROUP BY autor_id`,
   )
+  // `sqlRows` întoarce [] la eroare; un rezultat fără contoare nu trebuie să ajungă în cache.
+  if (autori.length > 0 && rows.length === 0) throw new Error('contoarele autorilor lipsesc')
   for (const row of rows) counts.set(Number(row.id), Number(row.numar))
   return autori.map((a) => ({ ...a, numar: counts.get(a.id) ?? 0 }))
+}
+
+/**
+ * Lista e aceeași pe toate cele ~1.300 de pagini de autor (indexul A–Z, „Alți autori”), deci
+ * stă în cache-ul de date Next (persistă între cereri și deploy-uri) în loc să fie citită din
+ * bază la fiecare regenerare. Invalidată de hook-urile citatelor și autorilor (revalidate.ts).
+ */
+const autoriCuNumarCache = unstable_cache(citesteAutoriCuNumar, ['autori-cu-numar'], {
+  tags: [TAG_AUTORI_CU_NUMAR],
+  // Ca ISR-ul paginilor (30 de zile): un `revalidate` mai scurt aici l-ar scurta și pe al
+  // fiecărei pagini care folosește lista (Next ia minimul) → mai multe regenerări, nu mai puține.
+  revalidate: 2592000,
+})
+
+export const getAutoriCuNumar = async (): Promise<AutorCuNumar[]> => {
+  try {
+    return await autoriCuNumarCache()
+  } catch {
+    // În afara runtime-ului Next (scripturi `payload run`) nu există cache de date.
+    return citesteAutoriCuNumar()
+  }
 }
 
 /**

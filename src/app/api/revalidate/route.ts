@@ -1,5 +1,6 @@
-import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
+
+import { revalidateContent } from '@/lib/revalidate'
 
 /**
  * Revalidare manuală a întregului cache ISR — de folosit după importuri
@@ -19,7 +20,7 @@ const handler = (req: Request): NextResponse => {
     return NextResponse.json({ revalidated: false }, { status: 401 })
   }
 
-  revalidatePath('/', 'layout')
+  revalidateContent()
   return NextResponse.json({ revalidated: true })
 }
 
