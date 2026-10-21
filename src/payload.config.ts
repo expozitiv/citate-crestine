@@ -25,6 +25,15 @@ const hasS3 =
   Boolean(process.env.S3_SECRET_ACCESS_KEY) &&
   Boolean(process.env.S3_ENDPOINT)
 
+/**
+ * Domeniul public al bucket-ului de imagini (ex. https://media.citatecrestine.ro, custom domain
+ * pe bucket-ul R2). Setat → paginile primesc URL-uri directe, servite de CDN-ul Cloudflare, fără
+ * funcția Vercel și fără egress contorizat. `/api/media/file/*` rămâne activ, ca paginile ISR
+ * randate înainte (cu URL-urile vechi) să afișeze în continuare portretele.
+ * Vezi docs/migrare-media-r2.md.
+ */
+const mediaPublicUrl = process.env.MEDIA_PUBLIC_URL?.replace(/\/+$/, '')
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -87,7 +96,12 @@ export default buildConfig({
       ? [
           s3Storage({
             collections: {
-              media: true,
+              media: mediaPublicUrl
+                ? {
+                    generateFileURL: ({ filename, prefix }) =>
+                      `${mediaPublicUrl}/${prefix ? `${prefix}/` : ''}${encodeURIComponent(filename)}`,
+                  }
+                : true,
             },
             bucket: process.env.S3_BUCKET!,
             config: {
