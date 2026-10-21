@@ -83,6 +83,14 @@ Verificări pentru cache-ul listei de autori (pe un build de producție local):
   paginii și cache-urile folosite; o valoare de 1 zi ar fi scurtat ISR-ul paginilor de autor
   la o zi (s-a văzut în `next build`).
 
+Paginile de citat nu mai expiră (`revalidate = false` în `src/app/(frontend)/[slug]/page.tsx`).
+Citatele nu se mai schimbă după publicare, iar editările le invalidează oricum țintit. Expirarea
+la 30 de zile regenera până la ~22.000 de pagini pe lună: până la ~170 MB egress și ~22.000 de
+ISR Writes. Verificat pe `next start`: antetul e `s-maxage=31536000`, fără
+`stale-while-revalidate`, iar textul editat prin API apare imediat pe pagină. Prețul: banda
+„Alte citate despre …” rămâne cum a fost la prima randare, până la următoarea editare sau
+următorul deploy.
+
 Efect secundar al sitemap-urilor săptămânale: un citat, autor sau carte nouă apare în sitemap
 cu până la 7 zile întârziere (pagina există și e legată intern imediat).
 

@@ -11,7 +11,11 @@ import { getCitatBySlug, getCitateInrudite } from '@/lib/data'
 import { autorDoc, carteDoc, imagineUrl, temeDocs } from '@/lib/format'
 import { RESERVED_SLUGS } from '@/lib/slug'
 
-export const revalidate = 2592000 // 30 de zile; modificările din admin invalidează țintit (lib/revalidate.ts)
+// Fără expirare: citatele nu se mai schimbă după publicare, iar orice editare (a citatului,
+// autorului, cărții sau temelor lui) invalidează pagina țintit din lib/revalidate.ts. O expirare
+// la 30 de zile regenera periodic ~22.000 de pagini fără motiv (ISR Writes + egress Supabase).
+// Prețul: banda „Alte citate despre …” nu se mai împrospătează singură.
+export const revalidate = false
 
 /* Paginile citatelor (~22.000) se generează la cerere și se cache-uiesc (ISR). */
 export const dynamicParams = true
