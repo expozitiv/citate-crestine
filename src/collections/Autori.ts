@@ -8,6 +8,10 @@ import { authenticatedOnly } from './access'
 
 export const Autori: CollectionConfig = {
   slug: 'autori',
+  // Câmpurile aduse când un autor e atașat altui document (citat, carte). Fără biografie și
+  // descriere: paginile de citat / listele nu le afișează, iar ele erau majoritatea octeților
+  // trimiși de bază (egress Supabase). Pagina autorului îl citește direct, complet.
+  defaultPopulate: { nume: true, slug: true, ani: true, descriereScurta: true, imagine: true },
   labels: {
     singular: 'Autor',
     plural: 'Autori',

@@ -1,5 +1,6 @@
 import config from '@payload-config'
 import { getPayload, type Payload, type PaginatedDocs, type Where } from 'payload'
+import { cache } from 'react'
 
 import { PAGE_SIZE } from './paginare'
 import { normalize } from './slug'
@@ -71,7 +72,16 @@ export type AutorCuNumar = AutorDoc & { numar: number }
 /* Interogări                                                          */
 /* ------------------------------------------------------------------ */
 
-export const getCitatBySlug = async (slug: string): Promise<CitatDoc | null> => {
+/**
+ * Câmpurile unui citat afișat într-o listă (Citate.tsx, banda „Alte citate”, homepage).
+ * Fără `textNorm` (dublura textului, doar pentru căutare) și fără câmpurile neafișate —
+ * fiecare octet citit din bază e egress Supabase, înmulțit cu miile de pagini ISR.
+ */
+const SELECT_CITAT_LISTA = { text: true, slug: true, autor: true, carte: true, teme: true } as const
+
+// Funcțiile `…BySlug` sunt învelite în `cache` (React): `generateMetadata` și pagina le apelează
+// cu același slug în aceeași randare, iar fără memoizare interogarea rula de două ori.
+export const getCitatBySlug = cache(async (slug: string): Promise<CitatDoc | null> => {
   const payload = await getPayloadClient()
   const res = await payload.find({
     collection: 'citate',
@@ -80,7 +90,7 @@ export const getCitatBySlug = async (slug: string): Promise<CitatDoc | null> => 
     depth: 2, // populează și autor.imagine (medalionul de pe pagina citatului)
   })
   return (res.docs[0] as CitatDoc | undefined) ?? null
-}
+})
 
 /** Hash determinist (FNV-1a) pentru citatul zilei. */
 const fnv1a = (input: string): number => {
@@ -142,6 +152,7 @@ const citatLaIndice = async (
     limit: 1,
     page: index + 1,
     depth,
+    ...(depth === 1 ? { select: SELECT_CITAT_LISTA } : {}),
   })
   return (res.docs[0] as CitatDoc | undefined) ?? null
 }
@@ -208,7 +219,14 @@ const sqlRows = async <T>(query: (sql: SqlTag) => unknown): Promise<T[]> => {
 export const getTemeCuNumar = async (): Promise<TemaCuNumar[]> => {
   const payload = await getPayloadClient()
   const teme = (
-    await payload.find({ collection: 'teme', limit: 0, pagination: false, depth: 0 })
+    await payload.find({
+      collection: 'teme',
+      limit: 0,
+      pagination: false,
+      depth: 0,
+      // indexul și banda „Subiecte” afișează doar numele și numărul de citate
+      select: { nume: true, slug: true },
+    })
   ).docs as TemaDoc[]
 
   const counts = new Map<number, number>()
@@ -229,7 +247,7 @@ export const getTemePopulare = async (limit = 8): Promise<TemaCuNumar[]> => {
   return [...toate].sort((a, b) => b.numar - a.numar).slice(0, limit)
 }
 
-export const getTemaBySlug = async (slug: string): Promise<TemaDoc | null> => {
+export const getTemaBySlug = cache(async (slug: string): Promise<TemaDoc | null> => {
   const payload = await getPayloadClient()
   const res = await payload.find({
     collection: 'teme',
@@ -238,7 +256,7 @@ export const getTemaBySlug = async (slug: string): Promise<TemaDoc | null> => {
     depth: 0,
   })
   return (res.docs[0] as TemaDoc | undefined) ?? null
-}
+})
 
 export const getCitateByTema = async (
   temaId: number,
@@ -252,6 +270,7 @@ export const getCitateByTema = async (
     limit: PAGE_SIZE,
     page,
     depth: 1,
+    select: SELECT_CITAT_LISTA,
   })) as PaginatedDocs<CitatDoc>
 }
 
@@ -262,7 +281,10 @@ export const getAutori = async (): Promise<AutorDoc[]> => {
     sort: 'numeNorm',
     limit: 0,
     pagination: false,
-    depth: 1,
+    depth: 0,
+    // Indexul și „Alți autori” afișează doar numele, anii și numărul de citate; lista e citită
+    // pe fiecare pagină de autor, deci biografiile tuturor autorilor erau egress inutil.
+    select: { nume: true, slug: true, ani: true },
   })
   return res.docs as AutorDoc[]
 }
@@ -293,7 +315,7 @@ export const getCoautoriIds = async (autorId: number): Promise<number[]> => {
   return rows.map((r) => Number(r.id))
 }
 
-export const getAutorBySlug = async (slug: string): Promise<AutorDoc | null> => {
+export const getAutorBySlug = cache(async (slug: string): Promise<AutorDoc | null> => {
   const payload = await getPayloadClient()
   const res = await payload.find({
     collection: 'autori',
@@ -302,7 +324,7 @@ export const getAutorBySlug = async (slug: string): Promise<AutorDoc | null> => 
     depth: 1,
   })
   return (res.docs[0] as AutorDoc | undefined) ?? null
-}
+})
 
 export const getCitateByAutor = async (
   autorId: number,
@@ -317,6 +339,7 @@ export const getCitateByAutor = async (
     limit,
     page,
     depth: 1,
+    select: SELECT_CITAT_LISTA,
   })) as PaginatedDocs<CitatDoc>
 }
 
@@ -350,11 +373,12 @@ export const getCarti = async (): Promise<CarteDoc[]> => {
     limit: 0,
     pagination: false,
     depth: 1,
+    select: { nume: true, slug: true, numeComplet: true, editura: true, an: true, url: true, autor: true },
   })
   return res.docs as CarteDoc[]
 }
 
-export const getCarteBySlug = async (slug: string): Promise<CarteDoc | null> => {
+export const getCarteBySlug = cache(async (slug: string): Promise<CarteDoc | null> => {
   const payload = await getPayloadClient()
   const res = await payload.find({
     collection: 'carti',
@@ -363,7 +387,7 @@ export const getCarteBySlug = async (slug: string): Promise<CarteDoc | null> => 
     depth: 1,
   })
   return (res.docs[0] as CarteDoc | undefined) ?? null
-}
+})
 
 export const getCitateByCarte = async (
   carteId: number,
@@ -377,6 +401,7 @@ export const getCitateByCarte = async (
     limit: PAGE_SIZE,
     page,
     depth: 1,
+    select: SELECT_CITAT_LISTA,
   })) as PaginatedDocs<CitatDoc>
 }
 
@@ -400,6 +425,7 @@ export const getCitateInrudite = async (citat: CitatDoc, limit = 3): Promise<Cit
     sort: 'textNorm',
     limit,
     depth: 1,
+    select: SELECT_CITAT_LISTA,
   })
   return res.docs as CitatDoc[]
 }
@@ -428,6 +454,7 @@ export const searchCitate = async (
     limit: PAGE_SIZE,
     page,
     depth: 1,
+    select: SELECT_CITAT_LISTA,
   })) as PaginatedDocs<CitatDoc>
 }
 

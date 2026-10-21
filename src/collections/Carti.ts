@@ -8,6 +8,8 @@ import { authenticatedOnly } from './access'
 
 export const Carti: CollectionConfig = {
   slug: 'carti',
+  // Câmpurile aduse când o carte e atașată unui citat (vezi Autori.defaultPopulate).
+  defaultPopulate: { nume: true, slug: true, url: true, an: true, editura: true },
   labels: {
     singular: 'Carte',
     plural: 'Cărți',

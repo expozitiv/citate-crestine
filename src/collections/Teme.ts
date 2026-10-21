@@ -8,6 +8,8 @@ import { authenticatedOnly } from './access'
 
 export const Teme: CollectionConfig = {
   slug: 'teme',
+  // Câmpurile aduse când o temă e atașată unui citat (vezi Autori.defaultPopulate).
+  defaultPopulate: { nume: true, slug: true },
   labels: {
     singular: 'Temă',
     plural: 'Teme',
